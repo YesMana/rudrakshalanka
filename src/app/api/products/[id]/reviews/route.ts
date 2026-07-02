@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server';
 import { addProductReview } from '@/lib/products-db';
 
-export async function POST(request: Request, { params }: { params: { id: string } }) {
+export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params;
     const { name, rating, comment } = await request.json();
     
     if (!name || !rating || !comment) {
