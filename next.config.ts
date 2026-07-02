@@ -6,6 +6,7 @@ const nextConfig: NextConfig = {
     config.resolve.symlinks = false;
     return config;
   },
+  turbopack: {},
 };
 
 export default nextConfig;
