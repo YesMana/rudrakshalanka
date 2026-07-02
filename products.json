@@ -1,0 +1,41 @@
+[
+  {
+    "id": "p1",
+    "name": "5 Mukhi Nepali Rudraksha",
+    "price": 4500,
+    "description": "Authentic 5 Mukhi Rudraksha from Nepal, blessed and energized for daily wear.",
+    "benefits": [
+      "Improves focus and memory",
+      "Brings peace of mind",
+      "Regulates blood pressure"
+    ],
+    "image": "/images/products/5-mukhi.jpg",
+    "createdAt": "2026-07-02T05:11:21.384Z"
+  },
+  {
+    "id": "p2",
+    "name": "7 Mukhi Rudraksha Mala",
+    "price": 12000,
+    "description": "A complete mala made of 7 Mukhi Rudraksha beads, associated with Goddess Mahalaxmi.",
+    "benefits": [
+      "Attracts wealth and prosperity",
+      "Helps overcome financial difficulties",
+      "Promotes success in business"
+    ],
+    "image": "/images/products/7-mukhi-mala.jpg",
+    "createdAt": "2026-07-02T05:11:21.384Z"
+  },
+  {
+    "id": "p3",
+    "name": "Gauri Shankar Rudraksha",
+    "price": 25000,
+    "description": "Rare joined Rudraksha representing Lord Shiva and Goddess Parvati.",
+    "benefits": [
+      "Improves relationships",
+      "Brings harmony to family life",
+      "Helps in finding a suitable partner"
+    ],
+    "image": "/images/products/gauri-shankar.jpg",
+    "createdAt": "2026-07-02T05:11:21.384Z"
+  }
+]

@@ -1,0 +1,27 @@
+[
+  {
+    "productId": "p1",
+    "name": "Dilshan Manujaya",
+    "address": "No.194/4\nKurunegala Road\nPutyalam",
+    "district": "Puttalam",
+    "phone1": "0762209299",
+    "phone2": "",
+    "paymentMethod": "cod",
+    "status": "Pending",
+    "createdAt": "2026-07-02T08:57:40.794Z",
+    "id": "ORD1782982660794"
+  },
+  {
+    "productId": "p1",
+    "name": "Dilshan Manujaya",
+    "address": "No.194/4\nKurunegala Road\nPutyalam",
+    "district": "Puttalam",
+    "phone1": "0762209299",
+    "phone2": "",
+    "paymentMethod": "cod",
+    "userEmail": "yes.manujaya@gmail.com",
+    "id": "ORD1782992134650",
+    "status": "Pending",
+    "createdAt": "2026-07-02T11:35:34.650Z"
+  }
+]

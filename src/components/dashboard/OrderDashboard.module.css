@@ -1,0 +1,60 @@
+.dashboard {
+  background-color: var(--color-dark-charcoal);
+  border-radius: 8px;
+  overflow-x: auto;
+  border: 1px solid #333;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 800px;
+}
+
+.table th,
+.table td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid #333;
+}
+
+.table th {
+  background-color: var(--color-maroon);
+  color: var(--color-gold);
+  font-weight: bold;
+}
+
+.statusBadge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.875rem;
+  font-weight: bold;
+}
+
+.pending {
+  background-color: #f59e0b;
+  color: #fff;
+}
+
+.verified {
+  background-color: #3b82f6;
+  color: #fff;
+}
+
+.shipped {
+  background-color: #10b981;
+  color: #fff;
+}
+
+.cancelled {
+  background-color: #ef4444;
+  color: #fff;
+}
+
+.statusSelect {
+  padding: 0.5rem;
+  background-color: var(--color-charcoal);
+  color: white;
+  border: 1px solid #555;
+  border-radius: 4px;
+}
