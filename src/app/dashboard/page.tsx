@@ -3,9 +3,9 @@
 import { useState, Suspense, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import OrderDashboard from '@/components/dashboard/OrderDashboard';
-import ProductManagement from '@/components/dashboard/ProductManagement';
-import SiteSettings from '@/components/dashboard/SiteSettings';
+import OrderDashboard from '../../components/dashboard/OrderDashboard';
+import ProductManagement from '../../components/dashboard/ProductManagement';
+import SiteSettings from '../../components/dashboard/SiteSettings';
 import { useLanguage } from '@/context/LanguageContext';
 import styles from './Dashboard.module.css';
 
