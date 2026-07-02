@@ -94,7 +94,7 @@ export default function CheckoutForm() {
       }
     } catch (error) {
       console.error('Checkout failed', error);
-      alert(t.checkout.error);
+      alert('Checkout failed. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -129,7 +129,7 @@ export default function CheckoutForm() {
             <span className={styles.price}>Rs. {displayPrice.toLocaleString()}</span>
           </div>
           <div className={styles.summaryItem}>
-            <span>{t.checkout.delivery}</span>
+            <span>Delivery</span>
             <span>Free</span>
           </div>
           <div className={`${styles.summaryItem} ${styles.total}`}>
@@ -161,17 +161,17 @@ export default function CheckoutForm() {
 
           <div className={styles.row}>
             <div className={styles.formGroup}>
-              <label htmlFor="phone1">{t.checkout.phone1Required}</label>
+              <label htmlFor="phone1">Phone Number 01 *</label>
               <input type="tel" id="phone1" name="phone1" required placeholder="07XXXXXXXX" pattern="[0-9]{10}" />
             </div>
             <div className={styles.formGroup}>
-              <label htmlFor="phone2">{t.checkout.phone2Optional}</label>
+              <label htmlFor="phone2">Phone Number 02 (Optional)</label>
               <input type="tel" id="phone2" name="phone2" placeholder="07XXXXXXXX" pattern="[0-9]{10}" />
             </div>
           </div>
 
           <div className={styles.formGroup}>
-            <label>{t.checkout.paymentMethodLabel}</label>
+            <label>Payment Method</label>
             <div className={styles.paymentMethods}>
               <label className={`${styles.paymentOption} ${paymentMethod === 'cod' ? styles.active : ''}`}>
                 <input 
@@ -181,7 +181,7 @@ export default function CheckoutForm() {
                   checked={paymentMethod === 'cod'}
                   onChange={(e) => setPaymentMethod(e.target.value)}
                 />
-                <span>{t.checkout.cod}</span>
+                <span>Cash on Delivery (COD)</span>
               </label>
               <label className={`${styles.paymentOption} ${paymentMethod === 'bank' ? styles.active : ''}`}>
                 <input 
@@ -191,24 +191,24 @@ export default function CheckoutForm() {
                   checked={paymentMethod === 'bank'}
                   onChange={(e) => setPaymentMethod(e.target.value)}
                 />
-                <span>{t.checkout.bankTransfer}</span>
+                <span>QR Pay / Bank Transfer</span>
               </label>
             </div>
           </div>
 
           {paymentMethod === 'bank' && (
             <div className={styles.bankDetails}>
-              <h4>{t.checkout.bankDetailsTitle}</h4>
-              <p>Bank: <strong>{t.checkout.bankName}</strong></p>
-              <p>Account Name: <strong>{t.checkout.accName}</strong></p>
-              <p>Account No: <strong>{t.checkout.accNo}</strong></p>
-              <p>Branch: <strong>{t.checkout.branch}</strong></p>
-              <p className={styles.note}>{t.checkout.bankNote}</p>
+              <h4>Bank Details</h4>
+              <p>Bank: <strong>Bank of Ceylon</strong></p>
+              <p>Account Name: <strong>Rudraksha Lanka</strong></p>
+              <p>Account No: <strong>12345678</strong></p>
+              <p>Branch: <strong>Colombo</strong></p>
+              <p className={styles.note}>Please transfer the amount and send the receipt to our WhatsApp.</p>
             </div>
           )}
 
           <button type="submit" className={styles.submitBtn} disabled={isSubmitting}>
-            {isSubmitting ? t.checkout.processing : t.checkout.confirmBtn}
+            {isSubmitting ? "Processing..." : "Confirm Order"}
           </button>
         </form>
       </div>

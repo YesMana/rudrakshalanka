@@ -38,7 +38,7 @@ const handler = NextAuth({
         if (user.email === 'yes.manujaya@gmail.com') {
           token.role = 'admin';
         } else {
-          token.role = user.role || "user";
+          token.role = (user as any).role || "user";
         }
       }
       return token;

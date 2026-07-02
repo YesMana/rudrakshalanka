@@ -10,7 +10,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    const updatedProduct = addProductReview(params.id, { name, rating, comment });
+    const updatedProduct = addProductReview(id, { name, rating, comment });
     
     if (!updatedProduct) {
       return NextResponse.json({ error: 'Product not found' }, { status: 404 });
