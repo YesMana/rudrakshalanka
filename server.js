@@ -2,9 +2,7 @@ const { createServer } = require('http')
 const { parse } = require('url')
 const next = require('next')
 const { loadEnvConfig } = require('@next/env')
-
-const projectDir = process.cwd()
-loadEnvConfig(projectDir)
+loadEnvConfig(__dirname)
 
 const dev = process.env.NODE_ENV !== 'production'
 const hostname = 'localhost'
