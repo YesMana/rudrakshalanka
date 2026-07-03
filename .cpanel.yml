@@ -1,6 +1,4 @@
 ---
 deployment:
   tasks:
-    - export PATH=/opt/cpanel/ea-nodejs20/bin:$PATH
-    - npm install
-    - npm run build
+    - export PATH=/opt/cpanel/ea-nodejs20/bin:$PATH && npm install && npm run build
