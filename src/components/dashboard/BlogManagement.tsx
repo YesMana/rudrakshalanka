@@ -21,6 +21,17 @@ const emptyBlog: BlogPost = {
   ta: { ...emptyTranslation }
 };
 
+// Quill modules for rich text formatting
+const modules = {
+  toolbar: [
+    [{ 'header': [1, 2, 3, false] }],
+    ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+    ['link', 'image'],
+    ['clean']
+  ],
+};
+
 export default function BlogManagement() {
   const [blogs, setBlogs] = useState<BlogPost[]>([]);
   const [editingBlog, setEditingBlog] = useState<BlogPost | null>(null);
@@ -112,16 +123,7 @@ export default function BlogManagement() {
     }
   };
 
-  // Quill modules for rich text formatting
-  const modules = {
-    toolbar: [
-      [{ 'header': [1, 2, 3, false] }],
-      ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-      ['link', 'image'],
-      ['clean']
-    ],
-  };
+
 
   if (loading) return <div>Loading blogs...</div>;
 
