@@ -30,6 +30,7 @@ export default function Header() {
           <Link href="/">{t.header.home}</Link>
           <Link href="/shop">{t.header.shop}</Link>
           <Link href="/about">{t.header.about}</Link>
+          <Link href="/blog">Blog</Link>
           <Link href="/contact">Contact</Link>
         </nav>
 
