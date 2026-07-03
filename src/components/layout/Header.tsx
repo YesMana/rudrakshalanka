@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useLanguage, Locale } from '@/context/LanguageContext';
@@ -15,6 +16,7 @@ const langLabels: Record<Locale, string> = {
 export default function Header() {
   const { t, locale, setLocale } = useLanguage();
   const { data: session } = useSession();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
     <header className={styles.header}>
@@ -26,12 +28,16 @@ export default function Header() {
           <span className={styles.logoText}>{t.header.logo}</span>
         </Link>
 
-        <nav className={styles.nav}>
-          <Link href="/">{t.header.home}</Link>
-          <Link href="/shop">{t.header.shop}</Link>
-          <Link href="/about">{t.header.about}</Link>
-          <Link href="/blog">Blog</Link>
-          <Link href="/contact">Contact</Link>
+        <button className={styles.menuToggle} onClick={() => setIsMenuOpen(!isMenuOpen)}>
+          ☰
+        </button>
+
+        <nav className={`${styles.nav} ${isMenuOpen ? styles.navOpen : ''}`}>
+          <Link href="/" onClick={() => setIsMenuOpen(false)}>{t.header.home}</Link>
+          <Link href="/shop" onClick={() => setIsMenuOpen(false)}>{t.header.shop}</Link>
+          <Link href="/about" onClick={() => setIsMenuOpen(false)}>{t.header.about}</Link>
+          <Link href="/blog" onClick={() => setIsMenuOpen(false)}>Blog</Link>
+          <Link href="/contact" onClick={() => setIsMenuOpen(false)}>Contact</Link>
         </nav>
 
         <div className={styles.actions}>

@@ -19,6 +19,7 @@
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
+  flex-wrap: wrap;
 }
 
 .logo {
@@ -114,6 +115,41 @@
   text-decoration: none;
   font-weight: 500;
   transition: color 0.3s;
+}
+
+.menuToggle {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--color-gold);
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .menuToggle {
+    display: block;
+    order: 2; /* Keep it on the right side next to actions */
+  }
+
+  .nav {
+    display: none;
+    width: 100%;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem 0;
+    order: 3;
+    border-top: 1px solid rgba(245, 205, 121, 0.15);
+  }
+
+  .navOpen {
+    display: flex;
+  }
+  
+  .actions {
+    order: 1;
+    margin-left: auto;
+  }
 }
 
 .nav a:hover {
