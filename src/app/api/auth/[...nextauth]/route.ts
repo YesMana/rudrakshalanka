@@ -3,7 +3,6 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 
 const handler = NextAuth({
-  trustHost: true,
   providers: [
     CredentialsProvider({
       name: "Admin Login",
