@@ -6,7 +6,7 @@ import { useCart } from '@/context/CartContext';
 import styles from './FloatingCart.module.css';
 
 export default function FloatingCart() {
-  const { items, totalItems, totalPrice, removeFromCart } = useCart();
+  const { items, totalItems, totalPrice, removeFromCart, updateQuantity, clearCart } = useCart();
   const [isOpen, setIsOpen] = useState(false);
 
   if (totalItems === 0) return null;
@@ -41,7 +41,14 @@ export default function FloatingCart() {
                   <img src={displayImg} alt={item.product.name} className={styles.itemImage} />
                 <div className={styles.itemDetails}>
                   <h4>{item.product.name}</h4>
-                  <p>Rs. {item.product.price.toLocaleString()} x {item.quantity}</p>
+                  <div className={styles.qtyRow}>
+                    <p>Rs. {item.product.price.toLocaleString()}</p>
+                    <div className={styles.quantityControls}>
+                      <button className={styles.qtyBtn} onClick={() => updateQuantity(item.product.id, item.quantity - 1)}>-</button>
+                      <span className={styles.qty}>{item.quantity}</span>
+                      <button className={styles.qtyBtn} onClick={() => updateQuantity(item.product.id, item.quantity + 1)}>+</button>
+                    </div>
+                  </div>
                 </div>
                 <button 
                   className={styles.removeBtn} 
@@ -60,9 +67,12 @@ export default function FloatingCart() {
               <span>Total:</span>
               <span>Rs. {totalPrice.toLocaleString()}</span>
             </div>
-            <Link href="/checkout" className={styles.checkoutBtn} onClick={() => setIsOpen(false)}>
-              Checkout
-            </Link>
+            <div className={styles.footerActions}>
+              <button className={styles.clearBtn} onClick={clearCart}>Clear</button>
+              <Link href="/checkout" className={styles.checkoutBtn} onClick={() => setIsOpen(false)}>
+                Checkout
+              </Link>
+            </div>
           </div>
         </div>
       )}
