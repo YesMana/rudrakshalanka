@@ -3,7 +3,9 @@ import { Order } from '@/types/order';
 import { getProducts } from '@/lib/products-db';
 
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  host: process.env.SMTP_HOST || 'smtp.gmail.com',
+  port: Number(process.env.SMTP_PORT) || 465,
+  secure: true, // true for 465, false for other ports
   auth: {
     user: process.env.SMTP_EMAIL,
     pass: process.env.SMTP_PASSWORD,
