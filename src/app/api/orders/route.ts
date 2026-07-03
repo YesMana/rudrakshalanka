@@ -3,6 +3,8 @@ import { getOrders, saveOrder, updateOrderStatus } from '@/lib/db';
 import { Order } from '@/types/order';
 import { sendOrderEmail, sendStatusUpdateEmail } from '@/lib/email';
 
+import { getProducts, updateProduct } from '@/lib/products-db';
+
 export async function GET() {
   try {
     const orders = getOrders();
@@ -15,6 +17,15 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
+    
+    // Check stock before ordering
+    const products = getProducts();
+    const product = products.find(p => p.id === body.productId);
+    
+    if (product && (product.stock !== undefined && product.stock <= 0)) {
+      return NextResponse.json({ error: 'Product is out of stock' }, { status: 400 });
+    }
+
     const newOrder: Order = {
       ...body,
       id: `ORD${Date.now()}`,
@@ -22,6 +33,11 @@ export async function POST(request: Request) {
       createdAt: new Date().toISOString(),
     };
     saveOrder(newOrder);
+
+    // Deduct stock
+    if (product && product.stock !== undefined) {
+      updateProduct(product.id, { stock: product.stock - 1 });
+    }
 
     // Send email notification asynchronously (don't wait for it)
     sendOrderEmail(newOrder).catch(console.error);

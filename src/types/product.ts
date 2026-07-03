@@ -14,6 +14,7 @@ export interface Product {
   benefits: string[];
   image: string; // Keep for backward compatibility
   images?: string[]; // Array of up to 5 images
+  stock?: number; // Inventory tracking
   reviews?: Review[];
   createdAt?: string;
 }

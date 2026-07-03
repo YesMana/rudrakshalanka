@@ -11,16 +11,31 @@ export default function ProductCard({ product }: { product: Product }) {
   const { addToCart } = useCart();
 
   const displayImage = product.images && product.images.length > 0 ? product.images[0] : product.image;
+  const inStock = (product.stock ?? 10) > 0;
 
   return (
     <div className={styles.card}>
       <Link href={`/product/${product.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-        <div className={styles.imagePlaceholder}>
+        <div className={styles.imagePlaceholder} style={{ position: 'relative' }}>
           {displayImage && displayImage !== '' ? (
             <img src={displayImage} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
           ) : (
             <span>{product.name}</span>
           )}
+          {/* Stock Badge */}
+          <div style={{
+            position: 'absolute',
+            top: '10px',
+            right: '10px',
+            background: inStock ? 'rgba(76, 175, 80, 0.9)' : 'rgba(244, 67, 54, 0.9)',
+            color: 'white',
+            padding: '4px 8px',
+            borderRadius: '4px',
+            fontSize: '0.8rem',
+            fontWeight: 'bold'
+          }}>
+            {inStock ? 'In Stock' : 'Out of Stock'}
+          </div>
         </div>
       </Link>
       <div className={styles.content}>
@@ -31,9 +46,17 @@ export default function ProductCard({ product }: { product: Product }) {
             {t.products.viewDetails}
           </Link>
           <button 
-            onClick={() => addToCart(product)} 
+            onClick={() => inStock && addToCart(product)} 
             className={styles.button}
-            style={{ flex: 1, background: 'transparent', border: '1px solid var(--color-gold)', color: 'var(--color-gold)' }}
+            disabled={!inStock}
+            style={{ 
+              flex: 1, 
+              background: 'transparent', 
+              border: '1px solid var(--color-gold)', 
+              color: 'var(--color-gold)',
+              opacity: inStock ? 1 : 0.5,
+              cursor: inStock ? 'pointer' : 'not-allowed'
+            }}
           >
             Add
           </button>

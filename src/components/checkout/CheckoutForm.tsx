@@ -73,7 +73,7 @@ export default function CheckoutForm() {
   const subtotal = isCartCheckout ? cartTotal : (product?.price || 0);
   const deliveryCharge = 350;
   const total = subtotal + deliveryCharge;
-  const needsAdvance = subtotal > 2500;
+  const needsAdvance = subtotal > 5000;
   const advanceAmount = 500;
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -227,10 +227,14 @@ export default function CheckoutForm() {
             <div style={{ background: 'rgba(230, 81, 0, 0.1)', border: '1px solid #e65100', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem' }}>
               <h4 style={{ color: '#e65100', margin: '0 0 0.5rem 0' }}>Advance Payment Required</h4>
               <p style={{ color: '#ccc', fontSize: '0.9rem', margin: 0, lineHeight: '1.5' }}>
-                Since your order subtotal is over Rs. 2,500, a minimum advance payment of <strong>Rs. 500</strong> is required to confirm your order. 
+                Since your order subtotal is over Rs. 5,000, a minimum advance payment of <strong>Rs. 500</strong> is required to confirm your order. 
                 Please transfer the amount via Bank Transfer or QR Pay and send the receipt to our WhatsApp. 
                 The remaining balance of <strong>Rs. {(total - advanceAmount).toLocaleString()}</strong> can be paid on delivery.
               </p>
+              <div style={{ marginTop: '1rem', padding: '0.8rem', background: 'rgba(0,0,0,0.2)', borderRadius: '6px', fontSize: '0.9rem', color: '#ddd' }}>
+                <strong style={{ color: '#e0b04c' }}>Contact Us (WhatsApp / Call):</strong> 076 220 9299<br/>
+                <strong style={{ color: '#e0b04c' }}>Address:</strong> No.194/4, Kurunegala Road, Puttalam
+              </div>
             </div>
           )}
 

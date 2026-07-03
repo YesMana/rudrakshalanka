@@ -107,6 +107,7 @@ export default function ProductManagement() {
         price: Number(formData.get('price')),
         description: formData.get('description'),
         benefits: benefitsArray,
+        stock: Number(formData.get('stock')) || 0,
         image: imageUrls.length > 0 ? imageUrls[0] : '/images/products/placeholder.jpg',
         images: imageUrls.length > 0 ? imageUrls : ['/images/products/placeholder.jpg'],
       };
@@ -145,6 +146,11 @@ export default function ProductManagement() {
           <div className={styles.formGroup}>
             <label htmlFor="price">Price (LKR) *</label>
             <input type="number" id="price" name="price" required min="0" />
+          </div>
+          
+          <div className={styles.formGroup}>
+            <label htmlFor="stock">Stock Quantity *</label>
+            <input type="number" id="stock" name="stock" required min="0" defaultValue="10" />
           </div>
           
           <div className={styles.formGroup}>
@@ -220,7 +226,10 @@ export default function ProductManagement() {
                 </div>
                 <div className={styles.productInfo}>
                   <h4>{product.name}</h4>
-                  <p className={styles.price}>Rs. {product.price.toLocaleString()}</p>
+                  <p>Rs. {product.price}</p>
+                  <p style={{ color: (product.stock ?? 10) > 0 ? '#4CAF50' : '#f44336', fontSize: '0.9rem', marginTop: '4px' }}>
+                    {(product.stock ?? 10) > 0 ? `In Stock (${product.stock})` : 'Out of Stock'}
+                  </p>
                   <button 
                     onClick={() => handleDelete(product.id)}
                     className={styles.deleteBtn}

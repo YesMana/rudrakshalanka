@@ -26,7 +26,7 @@ export const sendOrderEmail = async (order: Order) => {
     const productPrice = product ? product.price : 0;
     const deliveryCharge = 350;
     const total = productPrice + deliveryCharge;
-    const needsAdvance = productPrice > 2500;
+    const needsAdvance = productPrice > 5000;
     const advanceAmount = 500;
     const adminEmail = process.env.ADMIN_EMAIL || 'yes.manujaya@gmail.com';
     const mailOptions = {

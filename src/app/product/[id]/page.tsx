@@ -93,6 +93,9 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
         <div className={styles.detailsSection}>
           <h1 className={styles.title}>{product.name}</h1>
           <p className={styles.price}>{t.products.price} {product.price.toLocaleString()}</p>
+          <p style={{ color: (product.stock ?? 10) > 0 ? '#4CAF50' : '#f44336', fontSize: '1.1rem', fontWeight: 'bold', marginTop: '0.5rem' }}>
+            {(product.stock ?? 10) > 0 ? `In Stock (${product.stock ?? 10} available)` : 'Out of Stock'}
+          </p>
 
           <div className={styles.description}>
             <p>{product.description}</p>
@@ -108,16 +111,25 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
           </div>
 
           <div className={styles.actions} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-            <Link href={`/checkout?product=${product.id}`} className={styles.buyNowBtn} style={{ margin: 0 }}>
-              {t.productPage.buyNow}
-            </Link>
+            {(product.stock ?? 10) > 0 ? (
+              <Link href={`/checkout?product=${product.id}`} className={styles.buyNowBtn} style={{ margin: 0 }}>
+                {t.productPage.buyNow}
+              </Link>
+            ) : (
+              <button disabled className={styles.buyNowBtn} style={{ margin: 0, opacity: 0.5, cursor: 'not-allowed' }}>
+                Out of Stock
+              </button>
+            )}
             <button 
               onClick={() => {
-                addToCart(product);
-                alert(`${product.name} added to cart!`);
+                if ((product.stock ?? 10) > 0) {
+                  addToCart(product);
+                  alert(`${product.name} added to cart!`);
+                }
               }}
+              disabled={(product.stock ?? 10) <= 0}
               className={styles.whatsappBtn} 
-              style={{ margin: 0, background: 'transparent', border: '2px solid var(--color-gold)', color: 'var(--color-gold)' }}
+              style={{ margin: 0, background: 'transparent', border: '2px solid var(--color-gold)', color: 'var(--color-gold)', opacity: (product.stock ?? 10) > 0 ? 1 : 0.5, cursor: (product.stock ?? 10) > 0 ? 'pointer' : 'not-allowed' }}
             >
               Add to Cart
             </button>
