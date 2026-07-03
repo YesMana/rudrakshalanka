@@ -60,7 +60,7 @@ export const sendOrderEmail = async (order: Order) => {
           </table>
           
           <div style="text-align: center; margin-top: 30px;">
-            <a href="http://localhost:3000/dashboard" style="background-color: #a00000; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold;">View Dashboard</a>
+            <a href="https://rudrakshalanka.com/dashboard" style="background-color: #a00000; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold;">View Dashboard</a>
           </div>
         </div>
       `,
