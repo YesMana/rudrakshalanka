@@ -9,6 +9,10 @@ const nextConfig: NextConfig = {
     return config;
   },
   turbopack: {},
+  experimental: {
+    cpus: 1,
+    workerThreads: false,
+  },
 };
 
 export default nextConfig;
