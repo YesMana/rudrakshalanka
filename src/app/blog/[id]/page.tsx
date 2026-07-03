@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import { blogPosts } from '@/lib/blogData';
+import { getBlogs } from '@/lib/db';
 import { Metadata } from 'next';
 import BlogArticleClient from '@/components/blog/BlogArticleClient';
 
@@ -10,7 +10,8 @@ interface Props {
 // Generate metadata for SEO dynamically
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
-  const post = blogPosts.find(p => p.id === id);
+  const blogs = getBlogs();
+  const post = blogs.find(p => p.id === id);
   if (!post) {
     return { title: 'Post Not Found | Rudraksha Lanka' };
   }
@@ -27,14 +28,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 // Ensure static generation for all known blog posts
 export function generateStaticParams() {
-  return blogPosts.map((post) => ({
+  const blogs = getBlogs();
+  return blogs.map((post) => ({
     id: post.id,
   }));
 }
 
 export default async function BlogPostPage({ params }: Props) {
   const { id } = await params;
-  const post = blogPosts.find(p => p.id === id);
+  const blogs = getBlogs();
+  const post = blogs.find(p => p.id === id);
 
   if (!post) {
     notFound();

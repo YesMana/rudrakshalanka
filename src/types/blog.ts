@@ -1,7 +1,7 @@
 export interface BlogTranslation {
   title: string;
   excerpt: string;
-  content: string[];
+  content: string;
 }
 
 export interface BlogPost {

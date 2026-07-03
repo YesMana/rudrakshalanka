@@ -26,10 +26,7 @@ export default function BlogArticleClient({ post }: { post: BlogPost }) {
       </div>
 
       <div className={styles.contentWrapper}>
-        <div className={styles.content}>
-          {current.content.map((paragraph, index) => (
-            <p key={index}>{paragraph}</p>
-          ))}
+        <div className={styles.content} dangerouslySetInnerHTML={{ __html: current.content }}>
         </div>
         
         <div className={styles.footer}>

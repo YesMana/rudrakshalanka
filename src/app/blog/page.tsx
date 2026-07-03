@@ -1,4 +1,4 @@
-import { blogPosts } from '@/lib/blogData';
+import { getBlogs } from '@/lib/db';
 import styles from './page.module.css';
 import BlogGrid from '@/components/blog/BlogGrid';
 
@@ -8,6 +8,8 @@ export const metadata = {
 };
 
 export default function BlogIndex() {
+  const blogs = getBlogs();
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -17,7 +19,7 @@ export default function BlogIndex() {
         </p>
       </div>
 
-      <BlogGrid posts={blogPosts} />
+      <BlogGrid posts={blogs} />
     </div>
   );
 }

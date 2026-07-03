@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import OrderDashboard from '../../components/dashboard/OrderDashboard';
 import ProductManagement from '../../components/dashboard/ProductManagement';
 import SiteSettings from '../../components/dashboard/SiteSettings';
+import BlogManagement from '../../components/dashboard/BlogManagement';
 import { useLanguage } from '@/context/LanguageContext';
 import styles from './Dashboard.module.css';
 
@@ -13,7 +14,7 @@ export default function DashboardPage() {
   const { t } = useLanguage();
   const { data: session, status } = useSession();
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<'orders' | 'products' | 'settings'>('orders');
+  const [activeTab, setActiveTab] = useState<'orders' | 'products' | 'blogs' | 'settings'>('orders');
 
   useEffect(() => {
     if (status === 'unauthenticated' || (status === 'authenticated' && (session?.user as any)?.role !== 'admin')) {
@@ -57,6 +58,12 @@ export default function DashboardPage() {
           Product Management
         </button>
         <button 
+          className={`${styles.tabBtn} ${activeTab === 'blogs' ? styles.active : ''}`}
+          onClick={() => setActiveTab('blogs')}
+        >
+          Blog Management
+        </button>
+        <button 
           className={`${styles.tabBtn} ${activeTab === 'settings' ? styles.active : ''}`}
           onClick={() => setActiveTab('settings')}
         >
@@ -73,6 +80,11 @@ export default function DashboardPage() {
         {activeTab === 'products' && (
           <Suspense fallback={<div>Loading product management...</div>}>
             <ProductManagement />
+          </Suspense>
+        )}
+        {activeTab === 'blogs' && (
+          <Suspense fallback={<div>Loading blog management...</div>}>
+            <BlogManagement />
           </Suspense>
         )}
         {activeTab === 'settings' && (

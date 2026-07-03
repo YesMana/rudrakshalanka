@@ -13,9 +13,9 @@ export async function POST(request: Request) {
 
     const buffer = Buffer.from(await file.arrayBuffer());
     
-    // Generate a unique filename
+    const folder = formData.get('folder') as string || 'products';
     const filename = `${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
-    const uploadDir = path.join(process.cwd(), 'public', 'images', 'products');
+    const uploadDir = path.join(process.cwd(), 'public', 'images', folder);
     
     // Ensure directory exists
     if (!fs.existsSync(uploadDir)) {
@@ -26,7 +26,7 @@ export async function POST(request: Request) {
     fs.writeFileSync(filePath, buffer);
     
     // Return the public URL path
-    const imageUrl = `/images/products/${filename}`;
+    const imageUrl = `/images/${folder}/${filename}`;
     
     return NextResponse.json({ success: true, imageUrl });
   } catch (error) {
