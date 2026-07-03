@@ -20,13 +20,15 @@ export const saveOrder = (order: Order) => {
   fs.writeFileSync(dataFilePath, JSON.stringify(orders, null, 2));
 };
 
-export const updateOrderStatus = (id: string, status: Order['status']) => {
+export const updateOrderStatus = (id: string, status: Order['status']): Order | null => {
   const orders = getOrders();
   const index = orders.findIndex((o) => o.id === id);
   if (index !== -1) {
     orders[index].status = status;
     fs.writeFileSync(dataFilePath, JSON.stringify(orders, null, 2));
+    return orders[index];
   }
+  return null;
 };
 
 export const getBlogs = (): BlogPost[] => {

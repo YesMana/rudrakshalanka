@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getOrders, saveOrder, updateOrderStatus } from '@/lib/db';
 import { Order } from '@/types/order';
-import { sendOrderEmail } from '@/lib/email';
+import { sendOrderEmail, sendStatusUpdateEmail } from '@/lib/email';
 
 export async function GET() {
   try {
@@ -41,12 +41,18 @@ export async function POST(request: Request) {
   }
 }
 
-export async function PATCH(request: Request) {
+export async function PUT(request: Request) {
   try {
     const { id, status } = await request.json();
-    updateOrderStatus(id, status);
+    const updatedOrder = updateOrderStatus(id, status);
+    
+    if (updatedOrder) {
+      // Send email notification asynchronously
+      sendStatusUpdateEmail(updatedOrder).catch(console.error);
+    }
+    
     return NextResponse.json({ success: true });
-  } catch {
+  } catch (error) {
     return NextResponse.json({ error: 'Failed to update order' }, { status: 500 });
   }
 }

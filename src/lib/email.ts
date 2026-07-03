@@ -139,3 +139,70 @@ export const sendOrderEmail = async (order: Order) => {
     console.error('Error sending order notification email:', error);
   }
 };
+
+export const sendStatusUpdateEmail = async (order: Order) => {
+  if (!process.env.SMTP_EMAIL || !process.env.SMTP_PASSWORD) return;
+
+  try {
+    const products = getProducts();
+    const product = products.find(p => p.id === order.productId);
+    const productName = product ? product.name : order.productId;
+
+    const emailHtml = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0b04c; border-radius: 10px; background-color: #faf8f5;">
+        <div style="text-align: center; margin-bottom: 20px;">
+          <h1 style="color: #a00000; margin: 0;">Rudraksha Lanka</h1>
+          <p style="color: #666; font-style: italic;">Order Status Update</p>
+        </div>
+        
+        <h2 style="color: #333;">Hello ${order.name},</h2>
+        <p style="font-size: 16px; color: #444; line-height: 1.6;">
+          The status of your order <strong>#${order.id}</strong> has been updated to:
+        </p>
+        
+        <div style="text-align: center; margin: 20px 0; padding: 15px; background-color: #a00000; color: white; border-radius: 8px; font-size: 20px; font-weight: bold;">
+          ${order.status}
+        </div>
+        
+        <div style="background-color: white; padding: 15px; border-radius: 8px; border: 1px solid #ddd; margin: 20px 0;">
+          <p><strong>Item:</strong> ${productName}</p>
+        </div>
+
+        <p style="font-size: 14px; color: #666; margin-top: 30px;">
+          If you have any questions, feel free to reply to this email or contact us via WhatsApp.
+        </p>
+        <p style="font-size: 14px; color: #666; font-weight: bold;">
+          - The Rudraksha Lanka Team
+        </p>
+      </div>
+    `;
+
+    // 1. Send to Customer
+    if (order.customerEmail) {
+      await transporter.sendMail({
+        from: process.env.SMTP_EMAIL,
+        to: order.customerEmail,
+        subject: `Order Status Updated: ${order.status} (#${order.id}) - Rudraksha Lanka`,
+        html: emailHtml,
+      });
+      console.log('Status update email sent to customer');
+    }
+
+    // 2. Send to Admin
+    await transporter.sendMail({
+      from: process.env.SMTP_EMAIL,
+      to: process.env.SMTP_EMAIL,
+      subject: `Admin Alert: Order #${order.id} marked as ${order.status}`,
+      html: `
+        <h3>Order Status Changed</h3>
+        <p>Order ID: ${order.id}</p>
+        <p>Customer: ${order.name}</p>
+        <p>New Status: <strong>${order.status}</strong></p>
+      `,
+    });
+    console.log('Status update email sent to admin');
+
+  } catch (error) {
+    console.error('Error sending status update email:', error);
+  }
+};
