@@ -1,38 +1,56 @@
-export default function PrivacyPolicy() {
+"use client";
+
+import styles from '../page.module.css';
+import { useLanguage } from '@/context/LanguageContext';
+
+export default function Privacy() {
+  const { locale } = useLanguage();
+
+  const content = {
+    en: {
+      title: "Privacy Policy",
+      p1: "We respect your privacy. Rudraksha Lanka collects personal details (Name, Delivery Address, Phone Numbers) exclusively to securely process checkouts and dispatch parcels via our shipping partners.",
+      p2: "Your tracking and billing information is never shared, leased, or sold to third-party commercial marketing entities. Meta Pixel triggers are integrated solely to optimize user experience and evaluate marketing operations safely."
+    },
+    si: {
+      title: "රහස්‍යතා ප්‍රතිපත්තිය",
+      p1: "ඔබගේ රහස්‍යභාවය සුරැකීමට අප බැඳී සිටිමු. Rudraksha Lanka වෙබ් අඩවිය මගින් ලබාගන්නා ඔබගේ නම, ලිපිනය සහ දුරකථන අංක භාවිතා කරනු ලබන්නේ ඔබගේ ඇණවුම නිවැරදිව නිවසටම එවීමට (Delivery) පමණි.",
+      p2: "ඔබගේ කිසිදු පෞද්ගලික තොරතුරක් බාහිර පාර්ශවයන් වෙත විකිණීම හෝ ලබාදීම කිසිසේත්ම සිදු නොකරයි."
+    },
+    ta: {
+      title: "தனியுரிமைக் கொள்கை",
+      p1: "உங்களின் தனியுரிமையை நாங்கள் மதிக்கிறோம். Rudraksha Lanka இணையதளத்தின் மூலம் சேகரிக்கப்படும் உங்களின் பெயர், முகவரி மற்றும் தொலைபேசி எண்கள் உங்கள் ஆர்டர்களை வீட்டிற்கு விநியோகிப்பதற்காக (Delivery) மட்டுமே பயன்படுத்தப்படும்.",
+      p2: "உங்கள் தனிப்பட்ட விபரங்கள் எந்தவொரு வெளித்தரப்பினருக்கும் பகிரப்படமாட்டாது."
+    }
+  };
+
+  const current = content[locale] || content.en;
+
   return (
-    <div style={{ maxWidth: '800px', margin: '0 auto', padding: '4rem 1rem', color: 'var(--color-off-white)' }}>
-      <h1 style={{ color: 'var(--color-gold)', marginBottom: '2rem' }}>Privacy Policy</h1>
-      <p style={{ marginBottom: '1rem' }}>Last updated: {new Date().toLocaleDateString()}</p>
-      
-      <h2 style={{ color: 'var(--color-gold)', marginTop: '2rem', marginBottom: '1rem' }}>1. Information We Collect</h2>
-      <p style={{ marginBottom: '1rem' }}>
-        When you place an order on Rudraksha Lanka, we collect personal information such as your name, email address, phone number, and delivery address. This information is strictly used to process and deliver your orders.
-      </p>
-
-      <h2 style={{ color: 'var(--color-gold)', marginTop: '2rem', marginBottom: '1rem' }}>2. How We Use Your Information</h2>
-      <p style={{ marginBottom: '1rem' }}>
-        The information we collect is used in the following ways:
-      </p>
-      <ul style={{ listStyleType: 'disc', paddingLeft: '2rem', marginBottom: '1rem' }}>
-        <li>To process transactions and deliver your purchased products.</li>
-        <li>To send periodic emails regarding your order or other products and services.</li>
-        <li>To improve our website and customer service based on your feedback.</li>
-      </ul>
-
-      <h2 style={{ color: 'var(--color-gold)', marginTop: '2rem', marginBottom: '1rem' }}>3. Data Protection</h2>
-      <p style={{ marginBottom: '1rem' }}>
-        We implement a variety of security measures to maintain the safety of your personal information. We do not sell, trade, or otherwise transfer to outside parties your personally identifiable information.
-      </p>
-
-      <h2 style={{ color: 'var(--color-gold)', marginTop: '2rem', marginBottom: '1rem' }}>4. Cookies</h2>
-      <p style={{ marginBottom: '1rem' }}>
-        We use cookies to understand and save your preferences for future visits, enabling a smoother and more personalized shopping experience.
-      </p>
-
-      <h2 style={{ color: 'var(--color-gold)', marginTop: '2rem', marginBottom: '1rem' }}>5. Contact Us</h2>
-      <p style={{ marginBottom: '1rem' }}>
-        If there are any questions regarding this privacy policy, you may contact us using the information on our website.
-      </p>
+    <div className={styles.container} style={{ paddingTop: '100px', paddingBottom: '60px', minHeight: '80vh' }}>
+      <div style={{ maxWidth: '800px', margin: '0 auto', padding: '0 20px', color: '#fff' }}>
+        <h1 className={styles.sectionTitle} style={{ fontSize: '2.5rem', marginBottom: '2rem', textAlign: 'center' }}>
+          {current.title}
+        </h1>
+        
+        <div style={{ 
+          background: 'rgba(20, 20, 20, 0.8)', 
+          border: '1px solid rgba(212, 175, 55, 0.3)', 
+          borderRadius: '16px', 
+          padding: '2.5rem', 
+          lineHeight: '1.8',
+          boxShadow: '0 10px 30px rgba(0,0,0,0.5), inset 0 0 20px rgba(212,175,55,0.05)'
+        }}>
+          <p style={{ marginBottom: '1.8rem', color: '#eaeaea', fontSize: '1.1rem', textAlign: 'justify' }}>
+            {current.p1}
+          </p>
+          {current.p2 && (
+            <p style={{ color: '#eaeaea', fontSize: '1.1rem', textAlign: 'justify' }}>
+              {current.p2}
+            </p>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
