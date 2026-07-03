@@ -1,8 +1,27 @@
 "use client";
 
+import { useState, useEffect } from 'react';
 import styles from '../page.module.css';
+import { SiteSettings } from '@/lib/settings';
 
 export default function Contact() {
+  const [settings, setSettings] = useState<SiteSettings | null>(null);
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const res = await fetch('/api/settings');
+        if (res.ok) {
+          const data = await res.json();
+          setSettings(data);
+        }
+      } catch (error) {
+        console.error('Failed to fetch settings', error);
+      }
+    };
+    fetchSettings();
+  }, []);
+
   return (
     <div className={styles.container} style={{ paddingTop: '100px', paddingBottom: '60px', minHeight: '80vh' }}>
       <div style={{ maxWidth: '800px', margin: '0 auto', padding: '0 20px', color: '#fff' }}>
@@ -16,12 +35,12 @@ export default function Contact() {
           <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1.5rem' }}>
             <div>
               <h3 style={{ color: 'var(--color-gold)', marginBottom: '0.5rem' }}>Email</h3>
-              <p style={{ color: '#ccc' }}>info@rudrakshalanka.com</p>
+              <p style={{ color: '#ccc' }}>{settings?.contactEmail || 'info@rudrakshalanka.com'}</p>
             </div>
             
             <div>
               <h3 style={{ color: 'var(--color-gold)', marginBottom: '0.5rem' }}>Phone / WhatsApp</h3>
-              <p style={{ color: '#ccc' }}>+94 77 123 4567</p>
+              <p style={{ color: '#ccc' }}>{settings?.contactPhone || '+94 77 123 4567'}</p>
             </div>
             
             <div>
