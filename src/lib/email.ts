@@ -28,9 +28,10 @@ export const sendOrderEmail = async (order: Order) => {
     const total = productPrice + deliveryCharge;
     const needsAdvance = productPrice > 2500;
     const advanceAmount = 500;
+    const adminEmail = process.env.ADMIN_EMAIL || 'yes.manujaya@gmail.com';
     const mailOptions = {
       from: process.env.SMTP_EMAIL,
-      to: process.env.SMTP_EMAIL, // Send to the admin's own email
+      to: adminEmail, // Send to the admin's personal email
       subject: `🎉 New Order Received! (${order.id})`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
@@ -190,10 +191,11 @@ export const sendStatusUpdateEmail = async (order: Order) => {
       console.log('Status update email sent to customer');
     }
 
+    const adminEmail = process.env.ADMIN_EMAIL || 'yes.manujaya@gmail.com';
     // 2. Send to Admin
     await transporter.sendMail({
       from: process.env.SMTP_EMAIL,
-      to: process.env.SMTP_EMAIL,
+      to: adminEmail,
       subject: `Admin Alert: Order #${order.id} marked as ${order.status}`,
       html: `
         <h3>Order Status Changed</h3>
