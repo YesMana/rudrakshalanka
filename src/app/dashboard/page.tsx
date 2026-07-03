@@ -7,6 +7,7 @@ import OrderDashboard from '../../components/dashboard/OrderDashboard';
 import ProductManagement from '../../components/dashboard/ProductManagement';
 import SiteSettings from '../../components/dashboard/SiteSettings';
 import BlogManagement from '../../components/dashboard/BlogManagement';
+import AdminManagement from '../../components/dashboard/AdminManagement';
 import { useLanguage } from '@/context/LanguageContext';
 import styles from './Dashboard.module.css';
 
@@ -14,7 +15,7 @@ export default function DashboardPage() {
   const { t } = useLanguage();
   const { data: session, status } = useSession();
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<'orders' | 'products' | 'blogs' | 'settings'>('orders');
+  const [activeTab, setActiveTab] = useState<'orders' | 'products' | 'blogs' | 'settings' | 'admins'>('orders');
 
   useEffect(() => {
     if (status === 'unauthenticated' || (status === 'authenticated' && (session?.user as any)?.role !== 'admin')) {
@@ -69,6 +70,12 @@ export default function DashboardPage() {
         >
           Site Settings
         </button>
+        <button 
+          className={`${styles.tabBtn} ${activeTab === 'admins' ? styles.active : ''}`}
+          onClick={() => setActiveTab('admins')}
+        >
+          Manage Admins
+        </button>
       </div>
 
       <div className={styles.tabContent}>
@@ -90,6 +97,11 @@ export default function DashboardPage() {
         {activeTab === 'settings' && (
           <Suspense fallback={<div>Loading site settings...</div>}>
             <SiteSettings />
+          </Suspense>
+        )}
+        {activeTab === 'admins' && (
+          <Suspense fallback={<div>Loading admin management...</div>}>
+            <AdminManagement />
           </Suspense>
         )}
       </div>

@@ -29,6 +29,7 @@ export default function CheckoutForm() {
   const [paymentMethod, setPaymentMethod] = useState('cod');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [wantsEmailUpdate, setWantsEmailUpdate] = useState(false);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -78,6 +79,8 @@ export default function CheckoutForm() {
       phone2: formData.get('phone2'),
       paymentMethod: formData.get('paymentMethod'),
       userEmail: session?.user?.email || null, // Link order to user if logged in
+      customerEmail: formData.get('customerEmail'),
+      wantsEmailUpdate: wantsEmailUpdate,
       agreedToTerms: formData.get('agreedToTerms') === 'on',
     };
 
@@ -205,6 +208,26 @@ export default function CheckoutForm() {
               <p>Account No: <strong>12345678</strong></p>
               <p>Branch: <strong>Colombo</strong></p>
               <p className={styles.note}>Please transfer the amount and send the receipt to our WhatsApp.</p>
+            </div>
+          )}
+
+          <div style={{ marginTop: '1.5rem', display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+            <input 
+              type="checkbox" 
+              id="wantsEmailUpdate" 
+              checked={wantsEmailUpdate}
+              onChange={(e) => setWantsEmailUpdate(e.target.checked)}
+              style={{ marginTop: '4px', transform: 'scale(1.2)' }} 
+            />
+            <label htmlFor="wantsEmailUpdate" style={{ fontSize: '0.9rem', color: '#ccc', lineHeight: '1.5' }}>
+              Send me order updates via email (Optional)
+            </label>
+          </div>
+
+          {wantsEmailUpdate && (
+            <div className={styles.formGroup} style={{ marginTop: '1rem' }}>
+              <label htmlFor="customerEmail">Email Address *</label>
+              <input type="email" id="customerEmail" name="customerEmail" required placeholder="your.email@example.com" />
             </div>
           )}
 

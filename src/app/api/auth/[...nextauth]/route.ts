@@ -1,6 +1,7 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
+import { getAdmins } from "@/lib/admins-db";
 
 const handler = NextAuth({
   providers: [
@@ -11,7 +12,7 @@ const handler = NextAuth({
         password: { label: "Password", type: "password" }
       },
       async authorize(credentials, req) {
-        // Validate against env variables
+        // Validate against env variables (Master Admin)
         const adminUser = process.env.ADMIN_USERNAME;
         const adminPass = process.env.ADMIN_PASSWORD;
 
@@ -19,7 +20,15 @@ const handler = NextAuth({
           credentials?.username === adminUser &&
           credentials?.password === adminPass
         ) {
-          return { id: "1", name: "Admin", email: "admin@rudrakshalanka.com", role: "admin" };
+          return { id: "master", name: "Master Admin", email: "admin@rudrakshalanka.com", role: "admin" };
+        }
+
+        // Validate against admins.json
+        const admins = getAdmins();
+        const customAdmin = admins.find(a => a.type === 'credentials' && a.username === credentials?.username && a.password === credentials?.password);
+        
+        if (customAdmin) {
+          return { id: customAdmin.id, name: customAdmin.username || "Admin", email: "", role: "admin" };
         }
 
         return null;
@@ -34,11 +43,17 @@ const handler = NextAuth({
     async jwt({ token, user }) {
       if (user) {
         // If logged in via credentials, it already has user.role
-        // If logged in via Google, we check the email
+        // If logged in via Google, we check the email against env or admins.json
         if (user.email === 'yes.manujaya@gmail.com') {
           token.role = 'admin';
         } else {
-          token.role = (user as any).role || "user";
+          const admins = getAdmins();
+          const googleAdmin = admins.find(a => a.type === 'google' && a.email?.toLowerCase() === user.email?.toLowerCase());
+          if (googleAdmin) {
+            token.role = 'admin';
+          } else {
+            token.role = (user as any).role || "user";
+          }
         }
       }
       return token;

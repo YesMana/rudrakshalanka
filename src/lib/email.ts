@@ -68,6 +68,54 @@ export const sendOrderEmail = async (order: Order) => {
 
     await transporter.sendMail(mailOptions);
     console.log('Order notification email sent successfully!');
+
+    // Send email to customer if they opted in
+    if (order.wantsEmailUpdate && order.customerEmail) {
+      const customerMailOptions = {
+        from: process.env.SMTP_EMAIL,
+        to: order.customerEmail,
+        subject: `Thank you for your order! (#${order.id}) - Rudraksha Lanka`,
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0b04c; border-radius: 10px; background-color: #faf8f5;">
+            <div style="text-align: center; margin-bottom: 20px;">
+              <h1 style="color: #a00000; margin: 0;">Rudraksha Lanka</h1>
+              <p style="color: #666; font-style: italic;">Authentic Healing Beads</p>
+            </div>
+            
+            <h2 style="color: #333;">Hello ${order.name},</h2>
+            <p style="font-size: 16px; color: #444; line-height: 1.6;">
+              Thank you for shopping with us! We have successfully received your order <strong>#${order.id}</strong>. 
+              We are currently processing it and will contact you shortly to confirm delivery details.
+            </p>
+            
+            <div style="background-color: white; padding: 15px; border-radius: 8px; border: 1px solid #ddd; margin: 20px 0;">
+              <h3 style="color: #a00000; margin-top: 0;">Order Summary</h3>
+              <p><strong>Item:</strong> ${productName}</p>
+              <p><strong>Total:</strong> Rs. ${productPrice}</p>
+              <p><strong>Payment Method:</strong> ${order.paymentMethod === 'cod' ? 'Cash on Delivery (COD)' : 'Bank Transfer'}</p>
+              ${order.paymentMethod === 'bank' ? '<p style="color: #e65100; font-size: 14px;"><em>* Please remember to send us your bank transfer receipt via WhatsApp to complete your order.</em></p>' : ''}
+            </div>
+            
+            <div style="background-color: white; padding: 15px; border-radius: 8px; border: 1px solid #ddd; margin: 20px 0;">
+              <h3 style="color: #a00000; margin-top: 0;">Delivery Details</h3>
+              <p><strong>Name:</strong> ${order.name}</p>
+              <p><strong>Address:</strong> ${order.address}, ${order.district}</p>
+              <p><strong>Phone:</strong> ${order.phone1} ${order.phone2 ? `/ ${order.phone2}` : ''}</p>
+            </div>
+
+            <p style="font-size: 14px; color: #666; margin-top: 30px;">
+              If you have any questions, feel free to reply to this email or contact us via WhatsApp.
+            </p>
+            <p style="font-size: 14px; color: #666; font-weight: bold;">
+              May the blessings of Lord Shiva be with you!<br/>
+              - The Rudraksha Lanka Team
+            </p>
+          </div>
+        `,
+      };
+      await transporter.sendMail(customerMailOptions);
+      console.log('Order notification email sent to customer successfully!');
+    }
   } catch (error) {
     console.error('Error sending order notification email:', error);
   }

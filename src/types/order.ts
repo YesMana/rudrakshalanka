@@ -7,6 +7,8 @@ export interface Order {
   phone1: string;
   phone2?: string;
   paymentMethod: string;
+  customerEmail?: string;
+  wantsEmailUpdate?: boolean;
   agreedToTerms?: boolean;
   status: 'Pending' | 'Verified' | 'Shipped' | 'Cancelled';
   createdAt: string;
