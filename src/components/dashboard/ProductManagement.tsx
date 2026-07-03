@@ -8,7 +8,7 @@ export default function ProductManagement() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [imageFiles, setImageFiles] = useState<File[]>([]);
+  const [imageFiles, setImageFiles] = useState<{file: File, preview: string}[]>([]);
 
   const fetchProducts = async () => {
     try {
@@ -26,6 +26,10 @@ export default function ProductManagement() {
 
   useEffect(() => {
     fetchProducts();
+    // Cleanup function to revoke ObjectURLs when component unmounts
+    return () => {
+      imageFiles.forEach(img => URL.revokeObjectURL(img.preview));
+    };
   }, []);
 
   const handleDelete = async (id: string) => {
@@ -43,11 +47,15 @@ export default function ProductManagement() {
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      const newFiles = Array.from(e.target.files);
+      const newFiles = Array.from(e.target.files).map(file => ({
+        file,
+        preview: URL.createObjectURL(file)
+      }));
       const totalFiles = [...imageFiles, ...newFiles];
       
       if (totalFiles.length > 5) {
         alert("You can only upload up to 5 images total.");
+        newFiles.forEach(f => URL.revokeObjectURL(f.preview)); // Cleanup excess
       } else {
         setImageFiles(totalFiles);
       }
@@ -58,7 +66,10 @@ export default function ProductManagement() {
   };
 
   const removeImage = (index: number) => {
-    setImageFiles(imageFiles.filter((_, i) => i !== index));
+    const newFiles = [...imageFiles];
+    URL.revokeObjectURL(newFiles[index].preview);
+    newFiles.splice(index, 1);
+    setImageFiles(newFiles);
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -70,9 +81,9 @@ export default function ProductManagement() {
       const imageUrls: string[] = [];
       
       // Handle multiple image uploads
-      for (const file of imageFiles) {
+      for (const imgObj of imageFiles) {
         const uploadData = new FormData();
-        uploadData.append('image', file);
+        uploadData.append('image', imgObj.file);
         
         const uploadRes = await fetch('/api/upload', {
           method: 'POST',
@@ -160,13 +171,12 @@ export default function ProductManagement() {
               <div style={{ marginTop: '1rem' }}>
                 <p style={{ marginBottom: '0.5rem', fontSize: '0.9rem', color: '#ccc' }}>Selected Images ({imageFiles.length}/5):</p>
                 <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                  {imageFiles.map((file, idx) => (
+                  {imageFiles.map((imgObj, idx) => (
                     <div key={idx} style={{ position: 'relative', width: '80px', height: '80px' }}>
                       <img 
-                        src={URL.createObjectURL(file)} 
+                        src={imgObj.preview} 
                         alt={`Preview ${idx}`} 
                         style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }} 
-                        onLoad={() => URL.revokeObjectURL(URL.createObjectURL(file))}
                       />
                       <button 
                         type="button"
