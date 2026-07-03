@@ -12,6 +12,10 @@ export interface SiteSettings {
   contactEmail: string;
   contactPhone: string;
   facebookUrl: string;
+  bankName: string;
+  accountName: string;
+  accountNo: string;
+  branch: string;
 }
 
 const defaultSettings: SiteSettings = {
@@ -22,7 +26,11 @@ const defaultSettings: SiteSettings = {
   heroSubtitle: "Discover our collection of 100% authentic, certified Rudraksha beads for wealth, health, and spiritual awakening.",
   contactEmail: "yes.manujaya@gmail.com",
   contactPhone: "94770000000",
-  facebookUrl: "https://www.facebook.com/profile.php?id=61591698745191"
+  facebookUrl: "https://www.facebook.com/profile.php?id=61591698745191",
+  bankName: "Bank of Ceylon",
+  accountName: "Rudraksha Lanka",
+  accountNo: "12345678",
+  branch: "Colombo"
 };
 
 export function getSettings(): SiteSettings {

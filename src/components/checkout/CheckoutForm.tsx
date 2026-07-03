@@ -30,6 +30,19 @@ export default function CheckoutForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [wantsEmailUpdate, setWantsEmailUpdate] = useState(false);
+  const [settings, setSettings] = useState<any>(null);
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const res = await fetch('/api/settings');
+        if (res.ok) setSettings(await res.json());
+      } catch (error) {
+        console.error('Failed to fetch settings', error);
+      }
+    };
+    fetchSettings();
+  }, []);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -57,7 +70,11 @@ export default function CheckoutForm() {
   }, [productId]);
 
   const isCartCheckout = !productId && cartItems.length > 0;
-  const displayPrice = isCartCheckout ? cartTotal : (product?.price || 0);
+  const subtotal = isCartCheckout ? cartTotal : (product?.price || 0);
+  const deliveryCharge = 350;
+  const total = subtotal + deliveryCharge;
+  const needsAdvance = subtotal > 2500;
+  const advanceAmount = 500;
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -92,7 +109,7 @@ export default function CheckoutForm() {
       });
 
       if (res.ok) {
-        event('Purchase', { value: displayPrice, currency: 'LKR' });
+        event('Purchase', { value: total, currency: 'LKR' });
         setSuccess(true);
         if (isCartCheckout) clearCart();
       }
@@ -130,16 +147,22 @@ export default function CheckoutForm() {
           <h3>{t.checkout.orderSummary}</h3>
           <div className={styles.summaryItem}>
             <span>{isCartCheckout ? `Cart (${cartItems.length} items)` : product?.name}</span>
-            <span className={styles.price}>Rs. {displayPrice.toLocaleString()}</span>
+            <span className={styles.price}>Rs. {subtotal.toLocaleString()}</span>
           </div>
           <div className={styles.summaryItem}>
-            <span>Delivery</span>
-            <span>Free</span>
+            <span>Delivery Charge</span>
+            <span>Rs. {deliveryCharge}</span>
           </div>
           <div className={`${styles.summaryItem} ${styles.total}`}>
             <span>Total</span>
-            <span className={styles.price}>Rs. {displayPrice.toLocaleString()}</span>
+            <span className={styles.price}>Rs. {total.toLocaleString()}</span>
           </div>
+          {needsAdvance && (
+            <div className={styles.summaryItem} style={{ color: '#e65100', marginTop: '0.5rem', borderTop: 'none', paddingTop: 0 }}>
+              <span>Advance Required</span>
+              <span>Rs. {advanceAmount.toLocaleString()}</span>
+            </div>
+          )}
         </div>
 
         <form className={styles.form} onSubmit={handleSubmit}>
@@ -200,14 +223,40 @@ export default function CheckoutForm() {
             </div>
           </div>
 
-          {paymentMethod === 'bank' && (
+          {needsAdvance && (
+            <div style={{ background: 'rgba(230, 81, 0, 0.1)', border: '1px solid #e65100', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem' }}>
+              <h4 style={{ color: '#e65100', margin: '0 0 0.5rem 0' }}>Advance Payment Required</h4>
+              <p style={{ color: '#ccc', fontSize: '0.9rem', margin: 0, lineHeight: '1.5' }}>
+                Since your order subtotal is over Rs. 2,500, a minimum advance payment of <strong>Rs. 500</strong> is required to confirm your order. 
+                Please transfer the amount via Bank Transfer or QR Pay and send the receipt to our WhatsApp. 
+                The remaining balance of <strong>Rs. {(total - advanceAmount).toLocaleString()}</strong> can be paid on delivery.
+              </p>
+            </div>
+          )}
+
+          {(paymentMethod === 'bank' || needsAdvance) && (
             <div className={styles.bankDetails}>
-              <h4>Bank Details</h4>
-              <p>Bank: <strong>Bank of Ceylon</strong></p>
-              <p>Account Name: <strong>Rudraksha Lanka</strong></p>
-              <p>Account No: <strong>12345678</strong></p>
-              <p>Branch: <strong>Colombo</strong></p>
-              <p className={styles.note}>Please transfer the amount and send the receipt to our WhatsApp.</p>
+              <h4>Bank & QR Details</h4>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2rem', marginTop: '1rem' }}>
+                <div style={{ flex: 1, minWidth: '200px' }}>
+                  <p>Bank: <strong>{settings?.bankName || 'Bank of Ceylon'}</strong></p>
+                  <p>Account Name: <strong>{settings?.accountName || 'Rudraksha Lanka'}</strong></p>
+                  <p>Account No: <strong>{settings?.accountNo || '12345678'}</strong></p>
+                  <p>Branch: <strong>{settings?.branch || 'Colombo'}</strong></p>
+                  <p className={styles.note} style={{ marginTop: '1rem' }}>Please transfer {needsAdvance ? `Rs. 500 (or full amount)` : `the full amount`} and send the receipt to our WhatsApp.</p>
+                </div>
+                <div style={{ flex: 1, minWidth: '200px', textAlign: 'center' }}>
+                  <img 
+                    src="/images/qr.png" 
+                    alt="LankaQR Payment" 
+                    style={{ maxWidth: '100%', height: 'auto', borderRadius: '8px', border: '1px solid #333' }} 
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).style.display = 'none';
+                    }}
+                  />
+                  <p style={{ fontSize: '0.8rem', color: '#888', marginTop: '0.5rem' }}>Scan to pay via LankaQR</p>
+                </div>
+              </div>
             </div>
           )}
 

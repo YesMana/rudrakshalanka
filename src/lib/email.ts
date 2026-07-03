@@ -21,8 +21,11 @@ export const sendOrderEmail = async (order: Order) => {
     const products = getProducts();
     const product = products.find(p => p.id === order.productId);
     const productName = product ? product.name : order.productId;
-    const productPrice = product ? product.price.toLocaleString() : 'N/A';
-
+    const productPrice = product ? product.price : 0;
+    const deliveryCharge = 350;
+    const total = productPrice + deliveryCharge;
+    const needsAdvance = productPrice > 2500;
+    const advanceAmount = 500;
     const mailOptions = {
       from: process.env.SMTP_EMAIL,
       to: process.env.SMTP_EMAIL, // Send to the admin's own email
@@ -43,8 +46,22 @@ export const sendOrderEmail = async (order: Order) => {
             </tr>
             <tr style="background-color: #f9f9f9;">
               <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold;">Product</td>
-              <td style="padding: 10px; border: 1px solid #ddd;">${productName} (Rs. ${productPrice})</td>
+              <td style="padding: 10px; border: 1px solid #ddd;">${productName} (Rs. ${productPrice.toLocaleString()})</td>
             </tr>
+            <tr>
+              <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold;">Delivery Charge</td>
+              <td style="padding: 10px; border: 1px solid #ddd;">Rs. ${deliveryCharge.toLocaleString()}</td>
+            </tr>
+            <tr style="background-color: #f9f9f9;">
+              <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold;">Total</td>
+              <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold;">Rs. ${total.toLocaleString()}</td>
+            </tr>
+            ${needsAdvance ? `
+            <tr>
+              <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold; color: #e65100;">Advance Required</td>
+              <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold; color: #e65100;">Rs. ${advanceAmount.toLocaleString()}</td>
+            </tr>
+            ` : ''}
             <tr>
               <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold;">Phone</td>
               <td style="padding: 10px; border: 1px solid #ddd;">${order.phone1} ${order.phone2 ? `/ ${order.phone2}` : ''}</td>
@@ -90,10 +107,12 @@ export const sendOrderEmail = async (order: Order) => {
             
             <div style="background-color: white; padding: 15px; border-radius: 8px; border: 1px solid #ddd; margin: 20px 0;">
               <h3 style="color: #a00000; margin-top: 0;">Order Summary</h3>
-              <p><strong>Item:</strong> ${productName}</p>
-              <p><strong>Total:</strong> Rs. ${productPrice}</p>
-              <p><strong>Payment Method:</strong> ${order.paymentMethod === 'cod' ? 'Cash on Delivery (COD)' : 'Bank Transfer'}</p>
-              ${order.paymentMethod === 'bank' ? '<p style="color: #e65100; font-size: 14px;"><em>* Please remember to send us your bank transfer receipt via WhatsApp to complete your order.</em></p>' : ''}
+              <p><strong>Item:</strong> ${productName} (Rs. ${productPrice.toLocaleString()})</p>
+              <p><strong>Delivery Charge:</strong> Rs. ${deliveryCharge.toLocaleString()}</p>
+              <p style="font-size: 1.1em; margin-top: 10px;"><strong>Total:</strong> Rs. ${total.toLocaleString()}</p>
+              ${needsAdvance ? `<p style="color: #e65100; font-weight: bold; margin-top: 10px;">Advance Payment Required: Rs. ${advanceAmount.toLocaleString()}</p>` : ''}
+              <p style="margin-top: 15px;"><strong>Payment Method:</strong> ${order.paymentMethod === 'cod' ? 'Cash on Delivery (COD)' : 'Bank Transfer'}</p>
+              ${order.paymentMethod === 'bank' || needsAdvance ? '<p style="color: #e65100; font-size: 14px;"><em>* Please remember to send us your transfer receipt via WhatsApp to confirm your order.</em></p>' : ''}
             </div>
             
             <div style="background-color: white; padding: 15px; border-radius: 8px; border: 1px solid #ddd; margin: 20px 0;">

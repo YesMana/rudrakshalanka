@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, FormEvent } from 'react';
+import { useSession } from 'next-auth/react';
 import styles from './ProductManagement.module.css'; // Reusing styles
 
 export default function SiteSettings() {
@@ -12,8 +13,13 @@ export default function SiteSettings() {
     heroSubtitle: '',
     contactEmail: '',
     contactPhone: '',
-    facebookUrl: ''
+    facebookUrl: '',
+    bankName: '',
+    accountName: '',
+    accountNo: '',
+    branch: ''
   });
+  const { data: session } = useSession();
   const [loading, setLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -112,6 +118,40 @@ export default function SiteSettings() {
             <label htmlFor="facebookUrl">Facebook Page URL</label>
             <input type="text" id="facebookUrl" name="facebookUrl" value={settings.facebookUrl} onChange={handleChange} required />
           </div>
+
+          {session?.user?.email === 'yes.manujaya@gmail.com' && (
+            <>
+              <hr style={{ margin: '2rem 0', borderColor: 'rgba(255,255,255,0.1)' }} />
+              <h4 style={{ color: 'var(--color-gold)', marginBottom: '1rem' }}>Bank Details (Master Admin Only)</h4>
+              
+              <div className={styles.formGroup}>
+                <label htmlFor="bankName">Bank Name</label>
+                <input type="text" id="bankName" name="bankName" value={settings.bankName} onChange={handleChange} required />
+              </div>
+
+              <div className={styles.formGroup}>
+                <label htmlFor="accountName">Account Name</label>
+                <input type="text" id="accountName" name="accountName" value={settings.accountName} onChange={handleChange} required />
+              </div>
+
+              <div className={styles.formGroup}>
+                <label htmlFor="accountNo">Account No</label>
+                <input type="text" id="accountNo" name="accountNo" value={settings.accountNo} onChange={handleChange} required />
+              </div>
+
+              <div className={styles.formGroup}>
+                <label htmlFor="branch">Branch</label>
+                <input type="text" id="branch" name="branch" value={settings.branch} onChange={handleChange} required />
+              </div>
+
+              <div className={styles.formGroup}>
+                <label>QR Code Image</label>
+                <p style={{ fontSize: '0.85rem', color: '#888', marginBottom: '0.5rem' }}>
+                  Please upload your QR code image via cPanel to <code style={{color: '#ccc'}}>/public/images/qr.png</code>
+                </p>
+              </div>
+            </>
+          )}
           
           <button type="submit" className={styles.submitBtn} disabled={isSubmitting}>
             {isSubmitting ? 'Saving...' : 'Save Settings'}
