@@ -68,6 +68,7 @@ export default function OrderDashboard() {
       `"${o.address}"`,
       o.district,
       o.paymentMethod,
+      o.agreedToTerms ? 'Yes' : 'No',
       o.status
     ]);
     
@@ -122,6 +123,7 @@ export default function OrderDashboard() {
                 <th>{t.dashboard.contact}</th>
                 <th>{t.dashboard.district}</th>
                 <th>{t.dashboard.payment}</th>
+                <th>Terms Agreed</th>
                 <th>{t.dashboard.status}</th>
                 <th>{t.dashboard.update}</th>
               </tr>
@@ -138,6 +140,9 @@ export default function OrderDashboard() {
                   </td>
                   <td>{order.district}</td>
                   <td>{order.paymentMethod.toUpperCase()}</td>
+                  <td style={{ textAlign: 'center', color: order.agreedToTerms ? 'var(--color-gold)' : '#888' }}>
+                    {order.agreedToTerms ? '✓ Yes' : '✗ No'}
+                  </td>
                   <td>
                     <span className={`${styles.statusBadge} ${styles[order.status.toLowerCase()]}`}>
                       {t.dashboard[order.status.toLowerCase() as keyof typeof t.dashboard]}

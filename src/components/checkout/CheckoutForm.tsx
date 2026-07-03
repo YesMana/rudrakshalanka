@@ -78,6 +78,7 @@ export default function CheckoutForm() {
       phone2: formData.get('phone2'),
       paymentMethod: formData.get('paymentMethod'),
       userEmail: session?.user?.email || null, // Link order to user if logged in
+      agreedToTerms: formData.get('agreedToTerms') === 'on',
     };
 
     try {
@@ -206,6 +207,13 @@ export default function CheckoutForm() {
               <p className={styles.note}>Please transfer the amount and send the receipt to our WhatsApp.</p>
             </div>
           )}
+
+          <div style={{ marginTop: '1.5rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+            <input type="checkbox" id="agreedToTerms" name="agreedToTerms" required style={{ marginTop: '4px', transform: 'scale(1.2)' }} />
+            <label htmlFor="agreedToTerms" style={{ fontSize: '0.9rem', color: '#ccc', lineHeight: '1.5' }}>
+              I have read and agree to the <a href="/terms" target="_blank" style={{ color: 'var(--color-gold)', textDecoration: 'underline' }}>Return & Exchange Policy</a>.
+            </label>
+          </div>
 
           <button type="submit" className={styles.submitBtn} disabled={isSubmitting}>
             {isSubmitting ? "Processing..." : "Confirm Order"}
