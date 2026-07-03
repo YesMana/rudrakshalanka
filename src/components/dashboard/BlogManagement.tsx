@@ -4,10 +4,10 @@ import { useState, useEffect, useRef } from 'react';
 import dynamic from 'next/dynamic';
 import { BlogPost, BlogTranslation } from '@/types/blog';
 import styles from './BlogManagement.module.css';
-import 'react-quill-new/dist/quill.snow.css';
+// import 'react-quill-new/dist/quill.snow.css';
 
 // Dynamically import react-quill-new to avoid SSR issues
-const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false });
+// const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false });
 
 const emptyTranslation: BlogTranslation = { title: '', excerpt: '', content: '' };
 
@@ -206,14 +206,12 @@ export default function BlogManagement() {
 
           <div className={styles.formGroup}>
             <label>Full Content ({activeTab.toUpperCase()}):</label>
-            <div className={styles.quillWrapper}>
-              <ReactQuill 
-                theme="snow" 
-                value={editingBlog[activeTab].content} 
-                onChange={(content) => setEditingBlog({...editingBlog, [activeTab]: { ...editingBlog[activeTab], content }})} 
-                modules={modules}
-              />
-            </div>
+            <textarea 
+              value={editingBlog[activeTab].content} 
+              onChange={(e) => setEditingBlog({...editingBlog, [activeTab]: { ...editingBlog[activeTab], content: e.target.value }})} 
+              className={styles.textarea}
+              rows={15}
+            />
           </div>
         </div>
 
