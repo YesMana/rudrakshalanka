@@ -126,22 +126,22 @@ export default function SiteSettings() {
               
               <div className={styles.formGroup}>
                 <label htmlFor="bankName">Bank Name</label>
-                <input type="text" id="bankName" name="bankName" value={settings.bankName} onChange={handleChange} required />
+                <input type="text" id="bankName" name="bankName" value={settings.bankName} onChange={handleChange} />
               </div>
 
               <div className={styles.formGroup}>
                 <label htmlFor="accountName">Account Name</label>
-                <input type="text" id="accountName" name="accountName" value={settings.accountName} onChange={handleChange} required />
+                <input type="text" id="accountName" name="accountName" value={settings.accountName} onChange={handleChange} />
               </div>
 
               <div className={styles.formGroup}>
                 <label htmlFor="accountNo">Account No</label>
-                <input type="text" id="accountNo" name="accountNo" value={settings.accountNo} onChange={handleChange} required />
+                <input type="text" id="accountNo" name="accountNo" value={settings.accountNo} onChange={handleChange} />
               </div>
 
               <div className={styles.formGroup}>
                 <label htmlFor="branch">Branch</label>
-                <input type="text" id="branch" name="branch" value={settings.branch} onChange={handleChange} required />
+                <input type="text" id="branch" name="branch" value={settings.branch} onChange={handleChange} />
               </div>
 
               <div className={styles.formGroup}>
