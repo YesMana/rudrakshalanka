@@ -28,10 +28,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 // Ensure static generation for all known blog posts
 export function generateStaticParams() {
-  const blogs = getBlogs();
-  return blogs.map((post) => ({
-    id: post.id,
-  }));
+  const blogs = getBlogs() || [];
+  return blogs
+    .filter((post) => post && typeof post.id === 'string' && post.id.trim() !== '')
+    .map((post) => ({
+      id: post.id,
+    }));
 }
 
 export default async function BlogPostPage({ params }: Props) {
