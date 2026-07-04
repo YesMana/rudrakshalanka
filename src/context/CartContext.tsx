@@ -8,11 +8,12 @@ export interface CartItem {
   product: Product;
   quantity: number;
   variation?: string;
+  birthDetails?: { dob: string; zodiac: string };
 }
 
 interface CartContextType {
   items: CartItem[];
-  addToCart: (product: Product, quantity?: number, variation?: string) => void;
+  addToCart: (product: Product, quantity?: number, variation?: string, birthDetails?: { dob: string; zodiac: string }) => void;
   removeFromCart: (cartItemId: string) => void;
   updateQuantity: (cartItemId: string, quantity: number) => void;
   clearCart: () => void;
@@ -44,9 +45,10 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   }, [items, isLoaded]);
 
-  const addToCart = (product: Product, quantity = 1, variation?: string) => {
+  const addToCart = (product: Product, quantity = 1, variation?: string, birthDetails?: { dob: string; zodiac: string }) => {
     setItems(currentItems => {
-      const cartItemId = `${product.id}-${variation || 'default'}`;
+      const detailsKey = birthDetails ? `-${birthDetails.dob}-${birthDetails.zodiac}` : '';
+      const cartItemId = `${product.id}-${variation || 'default'}${detailsKey}`;
       const existingItem = currentItems.find(item => item.id === cartItemId);
       
       if (existingItem) {
@@ -56,7 +58,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
             : item
         );
       }
-      return [...currentItems, { id: cartItemId, product, quantity, variation }];
+      return [...currentItems, { id: cartItemId, product, quantity, variation, birthDetails }];
     });
   };
 

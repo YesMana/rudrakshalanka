@@ -44,6 +44,11 @@ export default function FloatingCart() {
                       {item.product.name}
                       {item.variation && <span className={styles.itemVariation}> ({item.variation})</span>}
                     </h4>
+                    {item.birthDetails && (
+                      <p style={{ fontSize: '0.8rem', color: '#aaa', margin: '4px 0 0 0', lineHeight: 1.2 }}>
+                        DOB: {item.birthDetails.dob} | Lagna: {item.birthDetails.zodiac}
+                      </p>
+                    )}
                     <div className={styles.qtyRow}>
                       <p className={styles.itemPrice}>Rs. {item.product.price.toLocaleString()}</p>
                       <div className={styles.quantityControls}>

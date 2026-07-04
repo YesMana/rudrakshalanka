@@ -84,7 +84,11 @@ export default function CheckoutForm() {
     let orderProductId = productId as string;
     
     if (isCartCheckout) {
-      orderProductId = cartItems.map(item => `${item.product.name}${item.variation ? ` (${item.variation})` : ''} (x${item.quantity})`).join(', ');
+      orderProductId = cartItems.map(item => {
+        const variationPart = item.variation ? ` (${item.variation})` : '';
+        const detailsPart = item.birthDetails ? ` [DOB: ${item.birthDetails.dob}, Lagna: ${item.birthDetails.zodiac}]` : '';
+        return `${item.product.name}${variationPart}${detailsPart} (x${item.quantity})`;
+      }).join(', ');
     }
 
     const data = {
@@ -154,6 +158,11 @@ export default function CheckoutForm() {
                     {item.product.name}
                     {item.variation && <span style={{ fontSize: '0.85em', color: 'var(--color-gold)', marginLeft: '0.5rem' }}>({item.variation})</span>}
                   </h4>
+                  {item.birthDetails && (
+                    <p style={{ fontSize: '0.8rem', color: '#aaa', margin: '4px 0 0 0', lineHeight: 1.2 }}>
+                      DOB: {item.birthDetails.dob} | Lagna: {item.birthDetails.zodiac}
+                    </p>
+                  )}
                   <p className={styles.itemPrice}>Rs. {item.product.price.toLocaleString()} x {item.quantity}</p>
                 </div>
               </div>

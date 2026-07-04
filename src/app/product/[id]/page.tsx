@@ -19,6 +19,8 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
   const [loading, setLoading] = useState(true);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [selectedVariation, setSelectedVariation] = useState<string>('');
+  const [birthDob, setBirthDob] = useState<string>('');
+  const [birthZodiac, setBirthZodiac] = useState<string>('');
 
   // ... (fetch logic remains same)
   useEffect(() => {
@@ -146,6 +148,36 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
             </div>
           )}
 
+          {product.requiresBirthDetails && (
+            <div style={{ marginTop: '1.5rem', marginBottom: '1.5rem', background: 'rgba(255,255,255,0.05)', padding: '1.5rem', borderRadius: '12px', borderLeft: '4px solid var(--color-gold)' }}>
+              <h3 style={{ marginBottom: '1rem', color: 'var(--color-gold)' }}>Personal Details Required</h3>
+              <p style={{ marginBottom: '1rem', fontSize: '0.9rem', color: '#ccc' }}>Please provide the following details for astrology/customization purposes.</p>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1rem' }}>
+                <div>
+                  <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>Date of Birth *</label>
+                  <input 
+                    type="date" 
+                    required 
+                    value={birthDob}
+                    onChange={(e) => setBirthDob(e.target.value)}
+                    style={{ width: '100%', padding: '0.8rem', borderRadius: '8px', border: '1px solid #444', background: '#222', color: '#fff', fontSize: '1rem' }} 
+                  />
+                </div>
+                <div>
+                  <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>Zodiac Sign (Lagnaya) *</label>
+                  <input 
+                    type="text" 
+                    required 
+                    placeholder="e.g. Leo / Singha"
+                    value={birthZodiac}
+                    onChange={(e) => setBirthZodiac(e.target.value)}
+                    style={{ width: '100%', padding: '0.8rem', borderRadius: '8px', border: '1px solid #444', background: '#222', color: '#fff', fontSize: '1rem' }} 
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className={styles.benefits}>
             <h3>{t.productPage.benefits}:</h3>
             <ul>
@@ -163,7 +195,11 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                     alert('Please select an option first.');
                     return;
                   }
-                  addToCart(product, 1, selectedVariation || undefined);
+                  if (product.requiresBirthDetails && (!birthDob || !birthZodiac)) {
+                    alert('Please enter your Date of Birth and Zodiac Sign (Lagnaya) before proceeding.');
+                    return;
+                  }
+                  addToCart(product, 1, selectedVariation || undefined, product.requiresBirthDetails ? { dob: birthDob, zodiac: birthZodiac } : undefined);
                   window.location.href = '/checkout';
                 }}
                 className={styles.buyNowBtn} 
@@ -183,8 +219,14 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                     alert('Please select an option first.');
                     return;
                   }
-                  addToCart(product, 1, selectedVariation || undefined);
+                  if (product.requiresBirthDetails && (!birthDob || !birthZodiac)) {
+                    alert('Please enter your Date of Birth and Zodiac Sign (Lagnaya) before proceeding.');
+                    return;
+                  }
+                  addToCart(product, 1, selectedVariation || undefined, product.requiresBirthDetails ? { dob: birthDob, zodiac: birthZodiac } : undefined);
                   alert(`${product.name}${selectedVariation ? ` (${selectedVariation})` : ''} added to cart!`);
+                  setBirthDob('');
+                  setBirthZodiac('');
                 }
               }}
               disabled={(product.stock ?? 10) <= 0}

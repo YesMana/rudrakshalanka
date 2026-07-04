@@ -18,6 +18,7 @@ export interface Product {
   showExactStock?: boolean; // Whether to show exact stock to customers
   hasVariations?: boolean;
   variations?: string[];
+  requiresBirthDetails?: boolean;
   reviews?: Review[];
   createdAt?: string;
 }

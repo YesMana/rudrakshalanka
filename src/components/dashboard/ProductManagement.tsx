@@ -11,6 +11,7 @@ export default function ProductManagement() {
   const [imageFiles, setImageFiles] = useState<{file: File, preview: string}[]>([]);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [hasVariations, setHasVariations] = useState(false);
+  const [requiresBirthDetails, setRequiresBirthDetails] = useState(false);
 
   const fetchProducts = async () => {
     try {
@@ -51,6 +52,7 @@ export default function ProductManagement() {
     setEditingProduct(product);
     setImageFiles([]); // Reset image files so new ones can be selected
     setHasVariations(product.hasVariations || false);
+    setRequiresBirthDetails(product.requiresBirthDetails || false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -58,6 +60,7 @@ export default function ProductManagement() {
     setEditingProduct(null);
     setImageFiles([]);
     setHasVariations(false);
+    setRequiresBirthDetails(false);
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -130,6 +133,7 @@ export default function ProductManagement() {
         showExactStock: formData.get('showExactStock') === 'on',
         hasVariations,
         variations: variationsArray,
+        requiresBirthDetails,
         image: imageUrls.length > 0 ? imageUrls[0] : (isEditing ? editingProduct.image : '/images/products/placeholder.jpg'),
         images: imageUrls.length > 0 ? imageUrls : (isEditing && editingProduct.images ? editingProduct.images : ['/images/products/placeholder.jpg']),
       };
@@ -145,6 +149,7 @@ export default function ProductManagement() {
           setProducts(products.map(p => p.id === editingProduct.id ? { ...p, ...productData } as Product : p));
           setEditingProduct(null);
           setHasVariations(false);
+          setRequiresBirthDetails(false);
           (e.target as HTMLFormElement).reset();
           setImageFiles([]);
         } else {
@@ -162,6 +167,7 @@ export default function ProductManagement() {
           const newProductRes = await res.json();
           setProducts([...products, newProductRes.product]);
           setHasVariations(false);
+          setRequiresBirthDetails(false);
           (e.target as HTMLFormElement).reset();
           setImageFiles([]);
         } else {
@@ -224,12 +230,24 @@ export default function ProductManagement() {
           </div>
           
           {hasVariations && (
-            <div className={styles.formGroup} style={{ background: '#f5f5f5', padding: '1rem', borderRadius: '8px' }}>
+            <div className={styles.formGroup} style={{ background: '#f5f5f5', padding: '1rem', borderRadius: '8px', marginBottom: '1rem' }}>
               <label htmlFor="variations">Variations (comma-separated) *</label>
               <input type="text" id="variations" name="variations" required={hasVariations} placeholder="e.g. Gold, Silver, Copper" defaultValue={editingProduct?.variations?.join(', ')} />
               <p style={{ fontSize: '0.8rem', color: '#666', marginTop: '4px' }}>Customers will be able to select one of these options when purchasing.</p>
             </div>
           )}
+          
+          <div className={styles.formGroup} style={{ flexDirection: 'row', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
+            <input 
+              type="checkbox" 
+              id="requiresBirthDetails" 
+              name="requiresBirthDetails" 
+              style={{ width: 'auto' }} 
+              checked={requiresBirthDetails}
+              onChange={(e) => setRequiresBirthDetails(e.target.checked)}
+            />
+            <label htmlFor="requiresBirthDetails" style={{ margin: 0, fontWeight: 'bold' }}>Require Birth Details (Date of Birth & Lagnaya)</label>
+          </div>
           
           <div className={styles.formGroup}>
             <label htmlFor="image">{editingProduct ? 'Update Product Images (Optional)' : 'Product Images (Up to 5) *'}</label>
