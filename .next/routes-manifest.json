@@ -31,6 +31,14 @@
       "namedRegex": "^/api/auth/(?<nxtPnextauth>.+?)(?:/)?$"
     },
     {
+      "page": "/api/images/[...path]",
+      "regex": "^/api/images/(.+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPpath": "nxtPpath"
+      },
+      "namedRegex": "^/api/images/(?<nxtPpath>.+?)(?:/)?$"
+    },
+    {
       "page": "/api/products/[id]",
       "regex": "^/api/products/([^/]+?)(?:/)?$",
       "routeKeys": {

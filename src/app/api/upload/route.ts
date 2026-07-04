@@ -25,8 +25,8 @@ export async function POST(request: Request) {
     const filePath = path.join(uploadDir, filename);
     fs.writeFileSync(filePath, buffer);
     
-    // Return the public URL path
-    const imageUrl = `/images/${folder}/${filename}`;
+    // Return the public URL path via the dynamic API route so runtime uploads work in production
+    const imageUrl = `/api/images/${folder}/${filename}`;
     
     return NextResponse.json({ success: true, imageUrl });
   } catch (error) {
