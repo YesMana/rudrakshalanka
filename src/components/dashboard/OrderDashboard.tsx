@@ -62,7 +62,7 @@ export default function OrderDashboard() {
       new Date(o.createdAt).toLocaleDateString(),
       `"${o.name}"`,
       o.productId,
-      '0', // We can add actual price logic if needed later
+      o.totalAmount ? `Rs. ${o.totalAmount.toLocaleString()}` : '-',
       o.phone1,
       o.phone2 || '',
       `"${o.address}"`,

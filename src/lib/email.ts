@@ -23,9 +23,12 @@ export const sendOrderEmail = async (order: Order) => {
     const products = getProducts();
     const product = products.find(p => p.id === order.productId);
     const productName = product ? product.name : order.productId;
-    const productPrice = product ? product.price : 0;
     const deliveryCharge = 350;
-    const total = productPrice + deliveryCharge;
+    
+    // If order has totalAmount, we can derive the product price from it
+    const total = order.totalAmount ?? (product ? product.price + deliveryCharge : deliveryCharge);
+    const productPrice = total - deliveryCharge;
+    
     const needsAdvance = productPrice > 5000;
     const advanceAmount = 500;
     const adminEmail = process.env.ADMIN_EMAIL || 'yes.manujaya@gmail.com';
@@ -48,8 +51,8 @@ export const sendOrderEmail = async (order: Order) => {
               <td style="padding: 10px; border: 1px solid #ddd;">${order.name}</td>
             </tr>
             <tr style="background-color: #f9f9f9;">
-              <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold;">Product</td>
-              <td style="padding: 10px; border: 1px solid #ddd;">${productName} (Rs. ${productPrice.toLocaleString()})</td>
+              <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold;">Items</td>
+              <td style="padding: 10px; border: 1px solid #ddd;">${productName}</td>
             </tr>
             <tr>
               <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold;">Delivery Charge</td>
@@ -110,7 +113,8 @@ export const sendOrderEmail = async (order: Order) => {
             
             <div style="background-color: white; padding: 15px; border-radius: 8px; border: 1px solid #ddd; margin: 20px 0;">
               <h3 style="color: #a00000; margin-top: 0;">Order Summary</h3>
-              <p><strong>Item:</strong> ${productName} (Rs. ${productPrice.toLocaleString()})</p>
+              <p><strong>Item:</strong> ${productName}</p>
+              <p><strong>Items Price:</strong> Rs. ${productPrice.toLocaleString()}</p>
               <p><strong>Delivery Charge:</strong> Rs. ${deliveryCharge.toLocaleString()}</p>
               <p style="font-size: 1.1em; margin-top: 10px;"><strong>Total:</strong> Rs. ${total.toLocaleString()}</p>
               ${needsAdvance ? `<p style="color: #e65100; font-weight: bold; margin-top: 10px;">Advance Payment Required: Rs. ${advanceAmount.toLocaleString()}</p>` : ''}

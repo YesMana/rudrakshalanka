@@ -11,5 +11,6 @@ export interface Order {
   wantsEmailUpdate?: boolean;
   agreedToTerms?: boolean;
   status: 'Pending' | 'Verified' | 'Shipped' | 'Cancelled';
+  totalAmount?: number;
   createdAt: string;
 }

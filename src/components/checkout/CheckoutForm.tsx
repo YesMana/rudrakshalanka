@@ -104,6 +104,7 @@ export default function CheckoutForm() {
       customerEmail: formData.get('customerEmail'),
       wantsEmailUpdate: wantsEmailUpdate,
       agreedToTerms: formData.get('agreedToTerms') === 'on',
+      totalAmount: total,
     };
 
     try {
