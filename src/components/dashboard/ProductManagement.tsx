@@ -9,6 +9,7 @@ export default function ProductManagement() {
   const [loading, setLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [imageFiles, setImageFiles] = useState<{file: File, preview: string}[]>([]);
+  const [existingImages, setExistingImages] = useState<string[]>([]);
   const [mainImageIndex, setMainImageIndex] = useState<number>(0);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [hasVariations, setHasVariations] = useState(false);
@@ -52,6 +53,16 @@ export default function ProductManagement() {
   const handleEdit = (product: Product) => {
     setEditingProduct(product);
     setImageFiles([]); // Reset image files so new ones can be selected
+    
+    // Set existing images
+    const imgs = product.images && product.images.length > 0 
+      ? product.images 
+      : (product.image ? [product.image] : []);
+    setExistingImages(imgs);
+    
+    const mainIdx = imgs.indexOf(product.image);
+    setMainImageIndex(mainIdx >= 0 ? mainIdx : 0);
+    
     setHasVariations(product.hasVariations || false);
     setRequiresBirthDetails(product.requiresBirthDetails || false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -60,6 +71,7 @@ export default function ProductManagement() {
   const cancelEdit = () => {
     setEditingProduct(null);
     setImageFiles([]);
+    setExistingImages([]);
     setMainImageIndex(0);
     setHasVariations(false);
     setRequiresBirthDetails(false);
@@ -71,17 +83,29 @@ export default function ProductManagement() {
         file,
         preview: URL.createObjectURL(file)
       }));
-      const totalFiles = [...imageFiles, ...newFiles];
+      const totalFilesCount = existingImages.length + imageFiles.length + newFiles.length;
       
-      if (totalFiles.length > 5) {
+      if (totalFilesCount > 5) {
         alert("You can only upload up to 5 images total.");
         newFiles.forEach(f => URL.revokeObjectURL(f.preview)); // Cleanup excess
       } else {
-        setImageFiles(totalFiles);
+        setImageFiles([...imageFiles, ...newFiles]);
       }
       
       // Reset input so the same file can be selected again if needed
       e.target.value = "";
+    }
+  };
+
+  const removeExistingImage = (index: number) => {
+    const newExisting = [...existingImages];
+    newExisting.splice(index, 1);
+    setExistingImages(newExisting);
+    
+    if (mainImageIndex === index) {
+      setMainImageIndex(0);
+    } else if (mainImageIndex > index) {
+      setMainImageIndex(mainImageIndex - 1);
     }
   };
 
@@ -90,9 +114,11 @@ export default function ProductManagement() {
     URL.revokeObjectURL(newFiles[index].preview);
     newFiles.splice(index, 1);
     setImageFiles(newFiles);
-    if (mainImageIndex === index) {
+    
+    const absoluteIndex = existingImages.length + index;
+    if (mainImageIndex === absoluteIndex) {
       setMainImageIndex(0);
-    } else if (mainImageIndex > index) {
+    } else if (mainImageIndex > absoluteIndex) {
       setMainImageIndex(mainImageIndex - 1);
     }
   };
@@ -130,6 +156,8 @@ export default function ProductManagement() {
       const variationsString = formData.get('variations') as string || '';
       const variationsArray = hasVariations ? variationsString.split(',').map(v => v.trim()).filter(v => v) : [];
       
+      const allImages = [...existingImages, ...imageUrls];
+
       const isEditing = !!editingProduct;
       const productData = {
         name: formData.get('name'),
@@ -141,8 +169,8 @@ export default function ProductManagement() {
         hasVariations,
         variations: variationsArray,
         requiresBirthDetails,
-        image: imageUrls.length > 0 ? (imageUrls[mainImageIndex] || imageUrls[0]) : (isEditing ? editingProduct.image : '/images/products/placeholder.jpg'),
-        images: imageUrls.length > 0 ? imageUrls : (isEditing && editingProduct.images ? editingProduct.images : ['/images/products/placeholder.jpg']),
+        image: allImages.length > 0 ? (allImages[mainImageIndex] || allImages[0]) : '/images/products/placeholder.jpg',
+        images: allImages.length > 0 ? allImages : ['/images/products/placeholder.jpg'],
       };
 
       if (isEditing) {
@@ -159,6 +187,7 @@ export default function ProductManagement() {
           setRequiresBirthDetails(false);
           (e.target as HTMLFormElement).reset();
           setImageFiles([]);
+          setExistingImages([]);
           setMainImageIndex(0);
         } else {
           throw new Error('Failed to update product');
@@ -178,6 +207,7 @@ export default function ProductManagement() {
           setRequiresBirthDetails(false);
           (e.target as HTMLFormElement).reset();
           setImageFiles([]);
+          setExistingImages([]);
           setMainImageIndex(0);
         } else {
           throw new Error('Failed to add product');
@@ -264,18 +294,18 @@ export default function ProductManagement() {
               type="file" 
               id="image" 
               accept="image/*" 
-              required={!editingProduct && imageFiles.length === 0} 
+              required={!editingProduct && imageFiles.length === 0 && existingImages.length === 0} 
               multiple
               onChange={handleImageChange}
             />
-            {imageFiles.length > 0 && (
+            {(existingImages.length > 0 || imageFiles.length > 0) && (
               <div style={{ marginTop: '1rem' }}>
-                <p style={{ marginBottom: '0.5rem', fontSize: '0.9rem', color: '#ccc' }}>Selected Images ({imageFiles.length}/5):</p>
+                <p style={{ marginBottom: '0.5rem', fontSize: '0.9rem', color: '#ccc' }}>Selected Images ({existingImages.length + imageFiles.length}/5):</p>
                 <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                  {imageFiles.map((imgObj, idx) => (
-                    <div key={idx} style={{ position: 'relative', width: '80px', height: '80px', borderRadius: '8px', border: mainImageIndex === idx ? '2px solid var(--color-gold)' : '2px solid transparent' }}>
+                  {existingImages.map((imgUrl, idx) => (
+                    <div key={`exist-${idx}`} style={{ position: 'relative', width: '80px', height: '80px', borderRadius: '8px', border: mainImageIndex === idx ? '2px solid var(--color-gold)' : '2px solid transparent' }}>
                       <img 
-                        src={imgObj.preview} 
+                        src={imgUrl} 
                         alt={`Preview ${idx}`} 
                         style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '6px' }} 
                       />
@@ -302,7 +332,7 @@ export default function ProductManagement() {
                       )}
                       <button 
                         type="button"
-                        onClick={() => removeImage(idx)}
+                        onClick={() => removeExistingImage(idx)}
                         style={{ 
                           position: 'absolute', top: '-5px', right: '-5px', 
                           background: '#ff4444', color: 'white', border: 'none', 
@@ -316,6 +346,54 @@ export default function ProductManagement() {
                       </button>
                     </div>
                   ))}
+                  
+                  {imageFiles.map((imgObj, fileIdx) => {
+                    const idx = existingImages.length + fileIdx;
+                    return (
+                      <div key={`new-${fileIdx}`} style={{ position: 'relative', width: '80px', height: '80px', borderRadius: '8px', border: mainImageIndex === idx ? '2px solid var(--color-gold)' : '2px solid transparent' }}>
+                        <img 
+                          src={imgObj.preview} 
+                          alt={`Preview ${idx}`} 
+                          style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '6px' }} 
+                        />
+                        {mainImageIndex !== idx ? (
+                          <button 
+                            type="button"
+                            onClick={() => setMainImageIndex(idx)}
+                            style={{ 
+                              position: 'absolute', bottom: '4px', left: '4px', 
+                              background: 'rgba(0,0,0,0.7)', color: 'white', border: '1px solid #555', 
+                              borderRadius: '4px', padding: '2px 4px', fontSize: '10px', cursor: 'pointer' 
+                            }}
+                          >
+                            Set Cover
+                          </button>
+                        ) : (
+                          <span style={{ 
+                            position: 'absolute', bottom: '4px', left: '4px', 
+                            background: 'var(--color-gold)', color: '#000', fontWeight: 'bold', 
+                            borderRadius: '4px', padding: '2px 4px', fontSize: '10px' 
+                          }}>
+                            Cover
+                          </span>
+                        )}
+                        <button 
+                          type="button"
+                          onClick={() => removeImage(fileIdx)}
+                          style={{ 
+                            position: 'absolute', top: '-5px', right: '-5px', 
+                            background: '#ff4444', color: 'white', border: 'none', 
+                            borderRadius: '50%', width: '20px', height: '20px', 
+                            cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            fontSize: '12px' 
+                          }}
+                          title="Remove"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             )}
