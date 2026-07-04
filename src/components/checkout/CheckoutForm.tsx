@@ -232,7 +232,7 @@ export default function CheckoutForm() {
                 The remaining balance of <strong>Rs. {(total - advanceAmount).toLocaleString()}</strong> can be paid on delivery.
               </p>
               <div style={{ marginTop: '1rem', padding: '0.8rem', background: 'rgba(0,0,0,0.2)', borderRadius: '6px', fontSize: '0.9rem', color: '#ddd' }}>
-                <strong style={{ color: '#e0b04c' }}>Contact Us (WhatsApp / Call):</strong> 076 220 9299<br/>
+                <strong style={{ color: '#e0b04c' }}>Contact Us (WhatsApp / Call):</strong> {settings?.contactPhone || '076 220 9299'}<br/>
                 <strong style={{ color: '#e0b04c' }}>Address:</strong> No.194/4, Kurunegala Road, Puttalam
               </div>
             </div>

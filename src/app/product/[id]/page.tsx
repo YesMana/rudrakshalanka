@@ -13,14 +13,23 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
   const { t } = useLanguage();
   const { addToCart } = useCart();
   const [product, setProduct] = useState<Product | null>(null);
+  const [settings, setSettings] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   // ... (fetch logic remains same)
   useEffect(() => {
-    const fetchProduct = async () => {
+    const fetchData = async () => {
       try {
-        const res = await fetch('/api/products');
+        const [res, settingsRes] = await Promise.all([
+          fetch('/api/products'),
+          fetch('/api/settings')
+        ]);
+        
+        if (settingsRes.ok) {
+          setSettings(await settingsRes.json());
+        }
+
         if (res.ok) {
           const products: Product[] = await res.json();
           const found = products.find((p) => p.id === id);
@@ -31,13 +40,13 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
           }
         }
       } catch (error) {
-        console.error('Failed to fetch product', error);
+        console.error('Failed to fetch data', error);
       } finally {
         setLoading(false);
       }
     };
     
-    fetchProduct();
+    fetchData();
   }, [id]);
 
   if (loading) {
@@ -46,7 +55,8 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
 
   if (!product) return null;
 
-  const whatsappNumber = '94770000000';
+  const rawNumber = settings?.contactPhone || '94770000000';
+  const whatsappNumber = rawNumber.replace(/[^0-9]/g, '');
   const whatsappMessage = encodeURIComponent(`Hello, I'm interested in buying the ${product.name} for Rs. ${product.price}.`);
   const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`;
 
