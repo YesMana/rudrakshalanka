@@ -18,6 +18,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
   const [settings, setSettings] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const [selectedVariation, setSelectedVariation] = useState<string>('');
   const [birthDob, setBirthDob] = useState<string>('');
   const [birthZodiac, setBirthZodiac] = useState<string>('');
@@ -74,9 +75,14 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
     <div className={styles.container}>
       <div className={styles.productWrapper}>
         <div className={styles.imageSection}>
-          <div className={styles.imagePlaceholder} style={{ marginBottom: displayImages.length > 1 ? '1rem' : '0' }}>
+          <div className={styles.imagePlaceholder} style={{ marginBottom: displayImages.length > 1 ? '1rem' : '0', background: 'rgba(0,0,0,0.2)' }}>
             {displayImages.length > 0 && displayImages[currentImageIndex] !== '' ? (
-              <img src={displayImages[currentImageIndex]} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '12px' }} />
+              <img 
+                src={displayImages[currentImageIndex]} 
+                alt={product.name} 
+                onClick={() => setIsFullscreen(true)}
+                style={{ width: '100%', height: '100%', objectFit: 'contain', borderRadius: '12px', cursor: 'pointer' }} 
+              />
             ) : (
               <span>{product.name}</span>
             )}
@@ -247,6 +253,25 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
           </div>
         </div>
       </div>
+
+      {isFullscreen && (
+        <div 
+          style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.9)', zIndex: 9999, display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+          onClick={() => setIsFullscreen(false)}
+        >
+          <img 
+            src={displayImages[currentImageIndex]} 
+            alt={product.name} 
+            style={{ maxWidth: '90%', maxHeight: '90%', objectFit: 'contain' }} 
+          />
+          <button 
+            onClick={() => setIsFullscreen(false)}
+            style={{ position: 'absolute', top: '20px', right: '20px', background: 'transparent', color: 'white', border: 'none', fontSize: '2rem', cursor: 'pointer' }}
+          >
+            ×
+          </button>
+        </div>
+      )}
 
       {/* Reviews Section */}
       <div style={{ marginTop: '4rem', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '2rem' }}>
