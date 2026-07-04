@@ -9,6 +9,7 @@ export default function ProductManagement() {
   const [loading, setLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [imageFiles, setImageFiles] = useState<{file: File, preview: string}[]>([]);
+  const [mainImageIndex, setMainImageIndex] = useState<number>(0);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [hasVariations, setHasVariations] = useState(false);
   const [requiresBirthDetails, setRequiresBirthDetails] = useState(false);
@@ -59,6 +60,7 @@ export default function ProductManagement() {
   const cancelEdit = () => {
     setEditingProduct(null);
     setImageFiles([]);
+    setMainImageIndex(0);
     setHasVariations(false);
     setRequiresBirthDetails(false);
   };
@@ -88,6 +90,11 @@ export default function ProductManagement() {
     URL.revokeObjectURL(newFiles[index].preview);
     newFiles.splice(index, 1);
     setImageFiles(newFiles);
+    if (mainImageIndex === index) {
+      setMainImageIndex(0);
+    } else if (mainImageIndex > index) {
+      setMainImageIndex(mainImageIndex - 1);
+    }
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -134,7 +141,7 @@ export default function ProductManagement() {
         hasVariations,
         variations: variationsArray,
         requiresBirthDetails,
-        image: imageUrls.length > 0 ? imageUrls[0] : (isEditing ? editingProduct.image : '/images/products/placeholder.jpg'),
+        image: imageUrls.length > 0 ? (imageUrls[mainImageIndex] || imageUrls[0]) : (isEditing ? editingProduct.image : '/images/products/placeholder.jpg'),
         images: imageUrls.length > 0 ? imageUrls : (isEditing && editingProduct.images ? editingProduct.images : ['/images/products/placeholder.jpg']),
       };
 
@@ -152,6 +159,7 @@ export default function ProductManagement() {
           setRequiresBirthDetails(false);
           (e.target as HTMLFormElement).reset();
           setImageFiles([]);
+          setMainImageIndex(0);
         } else {
           throw new Error('Failed to update product');
         }
@@ -170,6 +178,7 @@ export default function ProductManagement() {
           setRequiresBirthDetails(false);
           (e.target as HTMLFormElement).reset();
           setImageFiles([]);
+          setMainImageIndex(0);
         } else {
           throw new Error('Failed to add product');
         }
@@ -264,12 +273,33 @@ export default function ProductManagement() {
                 <p style={{ marginBottom: '0.5rem', fontSize: '0.9rem', color: '#ccc' }}>Selected Images ({imageFiles.length}/5):</p>
                 <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
                   {imageFiles.map((imgObj, idx) => (
-                    <div key={idx} style={{ position: 'relative', width: '80px', height: '80px' }}>
+                    <div key={idx} style={{ position: 'relative', width: '80px', height: '80px', borderRadius: '8px', border: mainImageIndex === idx ? '2px solid var(--color-gold)' : '2px solid transparent' }}>
                       <img 
                         src={imgObj.preview} 
                         alt={`Preview ${idx}`} 
-                        style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }} 
+                        style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '6px' }} 
                       />
+                      {mainImageIndex !== idx ? (
+                        <button 
+                          type="button"
+                          onClick={() => setMainImageIndex(idx)}
+                          style={{ 
+                            position: 'absolute', bottom: '4px', left: '4px', 
+                            background: 'rgba(0,0,0,0.7)', color: 'white', border: '1px solid #555', 
+                            borderRadius: '4px', padding: '2px 4px', fontSize: '10px', cursor: 'pointer' 
+                          }}
+                        >
+                          Set Cover
+                        </button>
+                      ) : (
+                        <span style={{ 
+                          position: 'absolute', bottom: '4px', left: '4px', 
+                          background: 'var(--color-gold)', color: '#000', fontWeight: 'bold', 
+                          borderRadius: '4px', padding: '2px 4px', fontSize: '10px' 
+                        }}>
+                          Cover
+                        </span>
+                      )}
                       <button 
                         type="button"
                         onClick={() => removeImage(idx)}
