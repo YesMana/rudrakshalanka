@@ -47,7 +47,7 @@ export default function ProductCard({ product }: { product: Product }) {
           <Link href={`/product/${product.id}`} className={styles.button} style={{ flex: 1, textAlign: 'center' }}>
             {t.products.viewDetails}
           </Link>
-          {product.hasVariations ? (
+          {(product.hasVariations || product.requiresBirthDetails) ? (
             <button 
               className={styles.button}
               onClick={() => router.push(`/product/${product.id}`)}
