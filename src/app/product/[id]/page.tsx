@@ -107,7 +107,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
           <p className={styles.price}>{t.products.price} {product.price.toLocaleString()}</p>
           <p style={{ color: (product.stock ?? 10) > 0 ? ((product.stock ?? 10) <= 5 ? '#ff9800' : '#4CAF50') : '#f44336', fontSize: '1.1rem', fontWeight: 'bold', marginTop: '0.5rem' }}>
             {(product.stock ?? 10) > 0 
-              ? (session?.user ? `In Stock (${product.stock ?? 10} available)` 
+              ? (session?.user || product.showExactStock ? `In Stock (${product.stock ?? 10} available)` 
                  : (product.stock ?? 10) <= 5 ? 'Only a few items left in stock!' : 'In Stock')
               : 'Out of Stock'}
           </p>

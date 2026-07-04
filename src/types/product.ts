@@ -15,6 +15,7 @@ export interface Product {
   image: string; // Keep for backward compatibility
   images?: string[]; // Array of up to 5 images
   stock?: number; // Inventory tracking
+  showExactStock?: boolean; // Whether to show exact stock to customers
   reviews?: Review[];
   createdAt?: string;
 }

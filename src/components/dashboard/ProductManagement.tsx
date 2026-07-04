@@ -108,6 +108,7 @@ export default function ProductManagement() {
         description: formData.get('description'),
         benefits: benefitsArray,
         stock: Number(formData.get('stock')) || 0,
+        showExactStock: formData.get('showExactStock') === 'on',
         image: imageUrls.length > 0 ? imageUrls[0] : '/images/products/placeholder.jpg',
         images: imageUrls.length > 0 ? imageUrls : ['/images/products/placeholder.jpg'],
       };
@@ -151,6 +152,11 @@ export default function ProductManagement() {
           <div className={styles.formGroup}>
             <label htmlFor="stock">Stock Quantity *</label>
             <input type="number" id="stock" name="stock" required min="0" defaultValue="10" />
+          </div>
+          
+          <div className={styles.formGroup} style={{ flexDirection: 'row', alignItems: 'center', gap: '0.5rem' }}>
+            <input type="checkbox" id="showExactStock" name="showExactStock" style={{ width: 'auto' }} />
+            <label htmlFor="showExactStock" style={{ margin: 0 }}>Show exact stock count to customers</label>
           </div>
           
           <div className={styles.formGroup}>
