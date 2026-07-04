@@ -113,7 +113,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
           </p>
 
           <div className={styles.description}>
-            <p>{product.description}</p>
+            <p style={{ whiteSpace: 'pre-wrap' }}>{product.description}</p>
           </div>
 
           <div className={styles.benefits}>

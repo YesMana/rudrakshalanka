@@ -9,6 +9,7 @@ export default function ProductManagement() {
   const [loading, setLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [imageFiles, setImageFiles] = useState<{file: File, preview: string}[]>([]);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
 
   const fetchProducts = async () => {
     try {
@@ -43,6 +44,17 @@ export default function ProductManagement() {
     } catch (error) {
       console.error('Failed to delete product', error);
     }
+  };
+
+  const handleEdit = (product: Product) => {
+    setEditingProduct(product);
+    setImageFiles([]); // Reset image files so new ones can be selected
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const cancelEdit = () => {
+    setEditingProduct(null);
+    setImageFiles([]);
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -102,6 +114,7 @@ export default function ProductManagement() {
       const benefitsString = formData.get('benefits') as string;
       const benefitsArray = benefitsString.split(',').map(b => b.trim()).filter(b => b);
       
+      const isEditing = !!editingProduct;
       const productData = {
         name: formData.get('name'),
         price: Number(formData.get('price')),
@@ -109,22 +122,41 @@ export default function ProductManagement() {
         benefits: benefitsArray,
         stock: Number(formData.get('stock')) || 0,
         showExactStock: formData.get('showExactStock') === 'on',
-        image: imageUrls.length > 0 ? imageUrls[0] : '/images/products/placeholder.jpg',
-        images: imageUrls.length > 0 ? imageUrls : ['/images/products/placeholder.jpg'],
+        image: imageUrls.length > 0 ? imageUrls[0] : (isEditing ? editingProduct.image : '/images/products/placeholder.jpg'),
+        images: imageUrls.length > 0 ? imageUrls : (isEditing && editingProduct.images ? editingProduct.images : ['/images/products/placeholder.jpg']),
       };
 
-      // Save product
-      const res = await fetch('/api/products', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(productData),
-      });
+      if (isEditing) {
+        const res = await fetch(`/api/products/${editingProduct.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(productData),
+        });
 
-      if (res.ok) {
-        const newProductRes = await res.json();
-        setProducts([...products, newProductRes.product]);
-        (e.target as HTMLFormElement).reset();
-        setImageFiles([]);
+        if (res.ok) {
+          setProducts(products.map(p => p.id === editingProduct.id ? { ...p, ...productData } as Product : p));
+          setEditingProduct(null);
+          (e.target as HTMLFormElement).reset();
+          setImageFiles([]);
+        } else {
+          throw new Error('Failed to update product');
+        }
+      } else {
+        // Save new product
+        const res = await fetch('/api/products', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(productData),
+        });
+
+        if (res.ok) {
+          const newProductRes = await res.json();
+          setProducts([...products, newProductRes.product]);
+          (e.target as HTMLFormElement).reset();
+          setImageFiles([]);
+        } else {
+          throw new Error('Failed to add product');
+        }
       }
     } catch (error) {
       console.error('Failed to add product', error);
@@ -137,45 +169,45 @@ export default function ProductManagement() {
   return (
     <div className={styles.container}>
       <div className={styles.formSection}>
-        <h3>Add New Product</h3>
-        <form onSubmit={handleSubmit} className={styles.form}>
+        <h3>{editingProduct ? 'Edit Product' : 'Add New Product'}</h3>
+        <form key={editingProduct?.id || 'new'} onSubmit={handleSubmit} className={styles.form}>
           <div className={styles.formGroup}>
             <label htmlFor="name">Product Name *</label>
-            <input type="text" id="name" name="name" required />
+            <input type="text" id="name" name="name" required defaultValue={editingProduct?.name} />
           </div>
           
           <div className={styles.formGroup}>
             <label htmlFor="price">Price (LKR) *</label>
-            <input type="number" id="price" name="price" required min="0" />
+            <input type="number" id="price" name="price" required min="0" defaultValue={editingProduct?.price} />
           </div>
           
           <div className={styles.formGroup}>
             <label htmlFor="stock">Stock Quantity *</label>
-            <input type="number" id="stock" name="stock" required min="0" defaultValue="10" />
+            <input type="number" id="stock" name="stock" required min="0" defaultValue={editingProduct?.stock ?? 10} />
           </div>
           
           <div className={styles.formGroup} style={{ flexDirection: 'row', alignItems: 'center', gap: '0.5rem' }}>
-            <input type="checkbox" id="showExactStock" name="showExactStock" style={{ width: 'auto' }} />
+            <input type="checkbox" id="showExactStock" name="showExactStock" style={{ width: 'auto' }} defaultChecked={editingProduct?.showExactStock} />
             <label htmlFor="showExactStock" style={{ margin: 0 }}>Show exact stock count to customers</label>
           </div>
           
           <div className={styles.formGroup}>
             <label htmlFor="description">Description *</label>
-            <textarea id="description" name="description" required rows={3}></textarea>
+            <textarea id="description" name="description" required rows={5} defaultValue={editingProduct?.description}></textarea>
           </div>
           
           <div className={styles.formGroup}>
             <label htmlFor="benefits">Benefits (comma-separated) *</label>
-            <input type="text" id="benefits" name="benefits" required placeholder="e.g. Wealth, Health, Peace" />
+            <input type="text" id="benefits" name="benefits" required placeholder="e.g. Wealth, Health, Peace" defaultValue={editingProduct?.benefits?.join(', ')} />
           </div>
           
           <div className={styles.formGroup}>
-            <label htmlFor="image">Product Images (Up to 5) *</label>
+            <label htmlFor="image">{editingProduct ? 'Update Product Images (Optional)' : 'Product Images (Up to 5) *'}</label>
             <input 
               type="file" 
               id="image" 
               accept="image/*" 
-              required={imageFiles.length === 0} 
+              required={!editingProduct && imageFiles.length === 0} 
               multiple
               onChange={handleImageChange}
             />
@@ -211,9 +243,16 @@ export default function ProductManagement() {
             )}
           </div>
           
-          <button type="submit" className={styles.submitBtn} disabled={isSubmitting}>
-            {isSubmitting ? 'Uploading...' : 'Add Product'}
-          </button>
+          <div style={{ display: 'flex', gap: '1rem' }}>
+            <button type="submit" className={styles.submitBtn} disabled={isSubmitting}>
+              {isSubmitting ? 'Saving...' : (editingProduct ? 'Update Product' : 'Add Product')}
+            </button>
+            {editingProduct && (
+              <button type="button" onClick={cancelEdit} className={styles.deleteBtn} style={{ margin: 0, padding: '1rem' }}>
+                Cancel Edit
+              </button>
+            )}
+          </div>
         </form>
       </div>
 
@@ -236,12 +275,22 @@ export default function ProductManagement() {
                   <p style={{ color: (product.stock ?? 10) > 0 ? '#4CAF50' : '#f44336', fontSize: '0.9rem', marginTop: '4px' }}>
                     {(product.stock ?? 10) > 0 ? `In Stock (${product.stock})` : 'Out of Stock'}
                   </p>
-                  <button 
-                    onClick={() => handleDelete(product.id)}
-                    className={styles.deleteBtn}
-                  >
-                    Delete
-                  </button>
+                  <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.5rem' }}>
+                    <button 
+                      onClick={() => handleEdit(product)}
+                      className={styles.submitBtn}
+                      style={{ padding: '0.5rem', flex: 1, margin: 0, background: '#4CAF50' }}
+                    >
+                      Edit
+                    </button>
+                    <button 
+                      onClick={() => handleDelete(product.id)}
+                      className={styles.deleteBtn}
+                      style={{ padding: '0.5rem', flex: 1, margin: 0 }}
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
