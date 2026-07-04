@@ -4,15 +4,17 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Product } from '@/types/product';
 
 export interface CartItem {
+  id: string;
   product: Product;
   quantity: number;
+  variation?: string;
 }
 
 interface CartContextType {
   items: CartItem[];
-  addToCart: (product: Product, quantity?: number) => void;
-  removeFromCart: (productId: string) => void;
-  updateQuantity: (productId: string, quantity: number) => void;
+  addToCart: (product: Product, quantity?: number, variation?: string) => void;
+  removeFromCart: (cartItemId: string) => void;
+  updateQuantity: (cartItemId: string, quantity: number) => void;
   clearCart: () => void;
   totalItems: number;
   totalPrice: number;
@@ -42,34 +44,38 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   }, [items, isLoaded]);
 
-  const addToCart = (product: Product, quantity = 1) => {
-    setItems(prev => {
-      const existing = prev.find(item => item.product.id === product.id);
-      if (existing) {
-        return prev.map(item => 
-          item.product.id === product.id 
+  const addToCart = (product: Product, quantity = 1, variation?: string) => {
+    setItems(currentItems => {
+      const cartItemId = `${product.id}-${variation || 'default'}`;
+      const existingItem = currentItems.find(item => item.id === cartItemId);
+      
+      if (existingItem) {
+        return currentItems.map(item => 
+          item.id === cartItemId 
             ? { ...item, quantity: item.quantity + quantity }
             : item
         );
       }
-      return [...prev, { product, quantity }];
+      return [...currentItems, { id: cartItemId, product, quantity, variation }];
     });
   };
 
-  const removeFromCart = (productId: string) => {
-    setItems(prev => prev.filter(item => item.product.id !== productId));
+  const removeFromCart = (cartItemId: string) => {
+    setItems(currentItems => currentItems.filter(item => item.id !== cartItemId));
   };
 
-  const updateQuantity = (productId: string, quantity: number) => {
+  const updateQuantity = (cartItemId: string, quantity: number) => {
     if (quantity <= 0) {
-      removeFromCart(productId);
+      removeFromCart(cartItemId);
       return;
     }
-    setItems(prev => prev.map(item => 
-      item.product.id === productId 
-        ? { ...item, quantity }
-        : item
-    ));
+    setItems(currentItems =>
+      currentItems.map(item =>
+        item.id === cartItemId
+          ? { ...item, quantity }
+          : item
+      )
+    );
   };
 
   const clearCart = () => {

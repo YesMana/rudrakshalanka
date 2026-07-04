@@ -5,10 +5,12 @@ import styles from './ProductCard.module.css';
 import { Product } from '@/types/product';
 import { useLanguage } from '@/context/LanguageContext';
 import { useCart } from '@/context/CartContext';
+import { useRouter } from 'next/navigation';
 
 export default function ProductCard({ product }: { product: Product }) {
   const { t } = useLanguage();
   const { addToCart } = useCart();
+  const router = useRouter();
 
   const displayImage = product.images && product.images.length > 0 ? product.images[0] : product.image;
   const inStock = (product.stock ?? 10) > 0;
@@ -45,21 +47,31 @@ export default function ProductCard({ product }: { product: Product }) {
           <Link href={`/product/${product.id}`} className={styles.button} style={{ flex: 1, textAlign: 'center' }}>
             {t.products.viewDetails}
           </Link>
-          <button 
-            onClick={() => inStock && addToCart(product)} 
-            className={styles.button}
-            disabled={!inStock}
-            style={{ 
-              flex: 1, 
-              background: 'transparent', 
-              border: '1px solid var(--color-gold)', 
-              color: 'var(--color-gold)',
-              opacity: inStock ? 1 : 0.5,
-              cursor: inStock ? 'pointer' : 'not-allowed'
-            }}
-          >
-            Add
-          </button>
+          {product.hasVariations ? (
+            <button 
+              className={styles.button}
+              onClick={() => router.push(`/product/${product.id}`)}
+              style={{ flex: 1 }}
+            >
+              Select Options
+            </button>
+          ) : (
+            <button 
+              className={styles.button}
+              onClick={() => inStock && addToCart(product)} 
+              disabled={!inStock}
+              style={{ 
+                flex: 1, 
+                background: 'transparent', 
+                border: '1px solid var(--color-gold)', 
+                color: 'var(--color-gold)',
+                opacity: inStock ? 1 : 0.5,
+                cursor: inStock ? 'pointer' : 'not-allowed'
+              }}
+            >
+              {t.products.addToCart}
+            </button>
+          )}
         </div>
       </div>
     </div>

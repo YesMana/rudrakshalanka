@@ -18,6 +18,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
   const [settings, setSettings] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [selectedVariation, setSelectedVariation] = useState<string>('');
 
   // ... (fetch logic remains same)
   useEffect(() => {
@@ -37,6 +38,9 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
           const found = products.find((p) => p.id === id);
           if (found) {
             setProduct(found);
+            if (found.hasVariations && found.variations && found.variations.length > 0) {
+              setSelectedVariation(found.variations[0]);
+            }
           } else {
             notFound();
           }
@@ -116,6 +120,32 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
             <p style={{ whiteSpace: 'pre-wrap' }}>{product.description}</p>
           </div>
 
+          {product.hasVariations && product.variations && product.variations.length > 0 && (
+            <div style={{ marginTop: '1.5rem', marginBottom: '1.5rem' }}>
+              <h3 style={{ marginBottom: '0.5rem' }}>Select Option:</h3>
+              <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                {product.variations.map((variation, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setSelectedVariation(variation)}
+                    style={{
+                      padding: '0.5rem 1rem',
+                      borderRadius: '8px',
+                      border: selectedVariation === variation ? '2px solid var(--color-gold)' : '1px solid #444',
+                      background: selectedVariation === variation ? 'rgba(212, 175, 55, 0.1)' : 'transparent',
+                      color: selectedVariation === variation ? 'var(--color-gold)' : '#fff',
+                      cursor: 'pointer',
+                      fontWeight: selectedVariation === variation ? 'bold' : 'normal',
+                      transition: 'all 0.2s ease'
+                    }}
+                  >
+                    {variation}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
           <div className={styles.benefits}>
             <h3>{t.productPage.benefits}:</h3>
             <ul>
@@ -127,19 +157,34 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
 
           <div className={styles.actions} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
             {(product.stock ?? 10) > 0 ? (
-              <Link href={`/checkout?product=${product.id}`} className={styles.buyNowBtn} style={{ margin: 0 }}>
+              <button 
+                onClick={() => {
+                  if (product.hasVariations && !selectedVariation) {
+                    alert('Please select an option first.');
+                    return;
+                  }
+                  addToCart(product, 1, selectedVariation || undefined);
+                  window.location.href = '/checkout';
+                }}
+                className={styles.buyNowBtn} 
+                style={{ margin: 0, border: 'none', cursor: 'pointer' }}
+              >
                 {t.productPage.buyNow}
-              </Link>
+              </button>
             ) : (
-              <button disabled className={styles.buyNowBtn} style={{ margin: 0, opacity: 0.5, cursor: 'not-allowed' }}>
+              <button disabled className={styles.buyNowBtn} style={{ margin: 0, opacity: 0.5, cursor: 'not-allowed', border: 'none' }}>
                 Out of Stock
               </button>
             )}
             <button 
               onClick={() => {
                 if ((product.stock ?? 10) > 0) {
-                  addToCart(product);
-                  alert(`${product.name} added to cart!`);
+                  if (product.hasVariations && !selectedVariation) {
+                    alert('Please select an option first.');
+                    return;
+                  }
+                  addToCart(product, 1, selectedVariation || undefined);
+                  alert(`${product.name}${selectedVariation ? ` (${selectedVariation})` : ''} added to cart!`);
                 }
               }}
               disabled={(product.stock ?? 10) <= 0}

@@ -37,27 +37,30 @@ export default function FloatingCart() {
             {items.map(item => {
               const displayImg = item.product.images && item.product.images.length > 0 ? item.product.images[0] : item.product.image;
               return (
-                <div key={item.product.id} className={styles.cartItem}>
+                <div key={item.id} className={styles.cartItem}>
                   <img src={displayImg} alt={item.product.name} className={styles.itemImage} />
-                <div className={styles.itemDetails}>
-                  <h4>{item.product.name}</h4>
-                  <div className={styles.qtyRow}>
-                    <p>Rs. {item.product.price.toLocaleString()}</p>
-                    <div className={styles.quantityControls}>
-                      <button className={styles.qtyBtn} onClick={() => updateQuantity(item.product.id, item.quantity - 1)}>-</button>
-                      <span className={styles.qty}>{item.quantity}</span>
-                      <button className={styles.qtyBtn} onClick={() => updateQuantity(item.product.id, item.quantity + 1)}>+</button>
+                  <div className={styles.itemDetails}>
+                    <h4 className={styles.itemName}>
+                      {item.product.name}
+                      {item.variation && <span className={styles.itemVariation}> ({item.variation})</span>}
+                    </h4>
+                    <div className={styles.qtyRow}>
+                      <p className={styles.itemPrice}>Rs. {item.product.price.toLocaleString()}</p>
+                      <div className={styles.quantityControls}>
+                        <button className={styles.qtyBtn} onClick={() => updateQuantity(item.id, item.quantity - 1)}>-</button>
+                        <span className={styles.qty}>{item.quantity}</span>
+                        <button className={styles.qtyBtn} onClick={() => updateQuantity(item.id, item.quantity + 1)}>+</button>
+                      </div>
                     </div>
                   </div>
+                  <button 
+                    className={styles.removeBtn} 
+                    onClick={() => removeFromCart(item.id)}
+                    title="Remove"
+                  >
+                    ×
+                  </button>
                 </div>
-                <button 
-                  className={styles.removeBtn} 
-                  onClick={() => removeFromCart(item.product.id)}
-                  title="Remove"
-                >
-                  ×
-                </button>
-              </div>
               );
             })}
           </div>

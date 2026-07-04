@@ -18,16 +18,29 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
     
-    // Check stock before ordering
     const products = getProducts();
-    const product = products.find(p => p.id === body.productId);
     
-    if (product && (product.stock !== undefined && product.stock <= 0)) {
-      return NextResponse.json({ error: 'Product is out of stock' }, { status: 400 });
+    // Check stock before ordering
+    if (body.cartItemsForStockUpdate) {
+      for (const item of body.cartItemsForStockUpdate) {
+        if (!item.product) continue;
+        const p = products.find(prod => prod.id === item.product.id);
+        if (p && p.stock !== undefined && p.stock < item.quantity) {
+          return NextResponse.json({ error: `${p.name} is out of stock or requested quantity unavailable` }, { status: 400 });
+        }
+      }
+    } else {
+      // Fallback for direct buy if any
+      const product = products.find(p => p.id === body.productId);
+      if (product && (product.stock !== undefined && product.stock <= 0)) {
+        return NextResponse.json({ error: 'Product is out of stock' }, { status: 400 });
+      }
     }
 
+    const { cartItemsForStockUpdate, ...orderDataToSave } = body;
+
     const newOrder: Order = {
-      ...body,
+      ...orderDataToSave,
       id: `ORD${Date.now()}`,
       status: 'Pending',
       createdAt: new Date().toISOString(),
@@ -35,8 +48,19 @@ export async function POST(request: Request) {
     saveOrder(newOrder);
 
     // Deduct stock
-    if (product && product.stock !== undefined) {
-      updateProduct(product.id, { stock: product.stock - 1 });
+    if (cartItemsForStockUpdate) {
+      for (const item of cartItemsForStockUpdate) {
+        if (!item.product) continue;
+        const p = products.find(prod => prod.id === item.product.id);
+        if (p && p.stock !== undefined) {
+          updateProduct(p.id, { stock: p.stock - item.quantity });
+        }
+      }
+    } else {
+      const product = products.find(p => p.id === body.productId);
+      if (product && product.stock !== undefined) {
+        updateProduct(product.id, { stock: product.stock - 1 });
+      }
     }
 
     // Send email notification asynchronously (don't wait for it)

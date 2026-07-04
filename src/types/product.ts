@@ -16,6 +16,8 @@ export interface Product {
   images?: string[]; // Array of up to 5 images
   stock?: number; // Inventory tracking
   showExactStock?: boolean; // Whether to show exact stock to customers
+  hasVariations?: boolean;
+  variations?: string[];
   reviews?: Review[];
   createdAt?: string;
 }

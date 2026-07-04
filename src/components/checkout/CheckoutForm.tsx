@@ -84,18 +84,19 @@ export default function CheckoutForm() {
     let orderProductId = productId as string;
     
     if (isCartCheckout) {
-      orderProductId = cartItems.map(item => `${item.product.name} (x${item.quantity})`).join(', ');
+      orderProductId = cartItems.map(item => `${item.product.name}${item.variation ? ` (${item.variation})` : ''} (x${item.quantity})`).join(', ');
     }
 
     const data = {
       productId: orderProductId,
+      cartItemsForStockUpdate: isCartCheckout ? cartItems : [{ product: product, quantity: 1 }],
       name: formData.get('name'),
       address: formData.get('address'),
       district: formData.get('district'),
       phone1: formData.get('phone1'),
       phone2: formData.get('phone2'),
       paymentMethod: formData.get('paymentMethod'),
-      userEmail: session?.user?.email || null, // Link order to user if logged in
+      userEmail: session?.user?.email || null,
       customerEmail: formData.get('customerEmail'),
       wantsEmailUpdate: wantsEmailUpdate,
       agreedToTerms: formData.get('agreedToTerms') === 'on',
@@ -145,10 +146,24 @@ export default function CheckoutForm() {
         
         <div className={styles.orderSummary}>
           <h3>{t.checkout.orderSummary}</h3>
-          <div className={styles.summaryItem}>
-            <span>{isCartCheckout ? `Cart (${cartItems.length} items)` : product?.name}</span>
-            <span className={styles.price}>Rs. {subtotal.toLocaleString()}</span>
-          </div>
+          {isCartCheckout ? (
+            cartItems.map((item, index) => (
+              <div key={index} className={styles.summaryItem}>
+                <div className={styles.itemDetails}>
+                  <h4 className={styles.itemName}>
+                    {item.product.name}
+                    {item.variation && <span style={{ fontSize: '0.85em', color: 'var(--color-gold)', marginLeft: '0.5rem' }}>({item.variation})</span>}
+                  </h4>
+                  <p className={styles.itemPrice}>Rs. {item.product.price.toLocaleString()} x {item.quantity}</p>
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className={styles.summaryItem}>
+              <span>{product?.name}</span>
+              <span className={styles.price}>Rs. {subtotal.toLocaleString()}</span>
+            </div>
+          )}
           <div className={styles.summaryItem}>
             <span>Delivery Charge</span>
             <span>Rs. {deliveryCharge}</span>

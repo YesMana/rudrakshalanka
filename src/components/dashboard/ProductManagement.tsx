@@ -10,6 +10,7 @@ export default function ProductManagement() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [imageFiles, setImageFiles] = useState<{file: File, preview: string}[]>([]);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [hasVariations, setHasVariations] = useState(false);
 
   const fetchProducts = async () => {
     try {
@@ -49,12 +50,14 @@ export default function ProductManagement() {
   const handleEdit = (product: Product) => {
     setEditingProduct(product);
     setImageFiles([]); // Reset image files so new ones can be selected
+    setHasVariations(product.hasVariations || false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const cancelEdit = () => {
     setEditingProduct(null);
     setImageFiles([]);
+    setHasVariations(false);
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -114,6 +117,9 @@ export default function ProductManagement() {
       const benefitsString = formData.get('benefits') as string;
       const benefitsArray = benefitsString.split(',').map(b => b.trim()).filter(b => b);
       
+      const variationsString = formData.get('variations') as string || '';
+      const variationsArray = hasVariations ? variationsString.split(',').map(v => v.trim()).filter(v => v) : [];
+      
       const isEditing = !!editingProduct;
       const productData = {
         name: formData.get('name'),
@@ -122,6 +128,8 @@ export default function ProductManagement() {
         benefits: benefitsArray,
         stock: Number(formData.get('stock')) || 0,
         showExactStock: formData.get('showExactStock') === 'on',
+        hasVariations,
+        variations: variationsArray,
         image: imageUrls.length > 0 ? imageUrls[0] : (isEditing ? editingProduct.image : '/images/products/placeholder.jpg'),
         images: imageUrls.length > 0 ? imageUrls : (isEditing && editingProduct.images ? editingProduct.images : ['/images/products/placeholder.jpg']),
       };
@@ -136,6 +144,7 @@ export default function ProductManagement() {
         if (res.ok) {
           setProducts(products.map(p => p.id === editingProduct.id ? { ...p, ...productData } as Product : p));
           setEditingProduct(null);
+          setHasVariations(false);
           (e.target as HTMLFormElement).reset();
           setImageFiles([]);
         } else {
@@ -152,6 +161,7 @@ export default function ProductManagement() {
         if (res.ok) {
           const newProductRes = await res.json();
           setProducts([...products, newProductRes.product]);
+          setHasVariations(false);
           (e.target as HTMLFormElement).reset();
           setImageFiles([]);
         } else {
@@ -200,6 +210,26 @@ export default function ProductManagement() {
             <label htmlFor="benefits">Benefits (comma-separated) *</label>
             <input type="text" id="benefits" name="benefits" required placeholder="e.g. Wealth, Health, Peace" defaultValue={editingProduct?.benefits?.join(', ')} />
           </div>
+          
+          <div className={styles.formGroup} style={{ flexDirection: 'row', alignItems: 'center', gap: '0.5rem', marginTop: '1rem' }}>
+            <input 
+              type="checkbox" 
+              id="hasVariations" 
+              name="hasVariations" 
+              style={{ width: 'auto' }} 
+              checked={hasVariations}
+              onChange={(e) => setHasVariations(e.target.checked)}
+            />
+            <label htmlFor="hasVariations" style={{ margin: 0, fontWeight: 'bold' }}>Product has variations (e.g. Gold, Silver)</label>
+          </div>
+          
+          {hasVariations && (
+            <div className={styles.formGroup} style={{ background: '#f5f5f5', padding: '1rem', borderRadius: '8px' }}>
+              <label htmlFor="variations">Variations (comma-separated) *</label>
+              <input type="text" id="variations" name="variations" required={hasVariations} placeholder="e.g. Gold, Silver, Copper" defaultValue={editingProduct?.variations?.join(', ')} />
+              <p style={{ fontSize: '0.8rem', color: '#666', marginTop: '4px' }}>Customers will be able to select one of these options when purchasing.</p>
+            </div>
+          )}
           
           <div className={styles.formGroup}>
             <label htmlFor="image">{editingProduct ? 'Update Product Images (Optional)' : 'Product Images (Up to 5) *'}</label>
