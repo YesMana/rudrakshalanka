@@ -17,9 +17,10 @@
     "cod": "✓ பண்ம் நேரில் வழங்கல்"
   },
   "products": {
-    "sectionTitle": "எங்கள் தெய்வீக தொகுப்பு",
+    "sectionTitle": "எங்கள் புனித தொகுப்பு",
     "viewDetails": "விவரங்களை காண்க",
-    "price": "ரூ."
+    "price": "ரூ.",
+    "addToCart": "கூடையில் சேர்"
   },
   "productPage": {
     "benefits": "ஆன்மீக நன்மைகள்",

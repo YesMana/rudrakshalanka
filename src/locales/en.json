@@ -19,7 +19,8 @@
   "products": {
     "sectionTitle": "Our Divine Collection",
     "viewDetails": "View Details",
-    "price": "Rs."
+    "price": "Rs.",
+    "addToCart": "Add to Cart"
   },
   "productPage": {
     "benefits": "Spiritual Benefits",

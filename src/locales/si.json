@@ -17,9 +17,10 @@
     "cod": "✓ බෙදා හැරීමේදී ගෙවීම"
   },
   "products": {
-    "sectionTitle": "අපගේ දිව්‍ය එකතුව",
-    "viewDetails": "තොරතුරු බලන්න",
-    "price": "රු."
+    "sectionTitle": "අපගේ පූජනීය එකතුව",
+    "viewDetails": "විස්තර බලන්න",
+    "price": "රු.",
+    "addToCart": "Cart එකට දාන්න"
   },
   "productPage": {
     "benefits": "ආධ්‍යාත්මික ප්‍රතිලාභ",
