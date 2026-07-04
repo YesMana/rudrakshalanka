@@ -127,10 +127,6 @@ export default function CheckoutForm() {
     }
   };
 
-  if (!product && !isCartCheckout) {
-    return <div style={{ textAlign: 'center', padding: '4rem', color: 'var(--color-gold)' }}>Please select a product to checkout.</div>;
-  }
-
   if (success) {
     return (
       <div className={styles.success}>
@@ -142,6 +138,10 @@ export default function CheckoutForm() {
         </button>
       </div>
     );
+  }
+
+  if (!product && !isCartCheckout) {
+    return <div style={{ textAlign: 'center', padding: '4rem', color: 'var(--color-gold)' }}>Please select a product to checkout.</div>;
   }
 
   return (
