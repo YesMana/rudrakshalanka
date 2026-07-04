@@ -7,11 +7,13 @@ import Link from 'next/link';
 import { useLanguage } from '@/context/LanguageContext';
 import { useCart } from '@/context/CartContext';
 import { Product } from '@/types/product';
+import { useSession } from 'next-auth/react';
 
 export default function ProductPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const { t } = useLanguage();
   const { addToCart } = useCart();
+  const { data: session } = useSession();
   const [product, setProduct] = useState<Product | null>(null);
   const [settings, setSettings] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -103,8 +105,11 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
         <div className={styles.detailsSection}>
           <h1 className={styles.title}>{product.name}</h1>
           <p className={styles.price}>{t.products.price} {product.price.toLocaleString()}</p>
-          <p style={{ color: (product.stock ?? 10) > 0 ? '#4CAF50' : '#f44336', fontSize: '1.1rem', fontWeight: 'bold', marginTop: '0.5rem' }}>
-            {(product.stock ?? 10) > 0 ? `In Stock (${product.stock ?? 10} available)` : 'Out of Stock'}
+          <p style={{ color: (product.stock ?? 10) > 0 ? ((product.stock ?? 10) <= 5 ? '#ff9800' : '#4CAF50') : '#f44336', fontSize: '1.1rem', fontWeight: 'bold', marginTop: '0.5rem' }}>
+            {(product.stock ?? 10) > 0 
+              ? (session?.user ? `In Stock (${product.stock ?? 10} available)` 
+                 : (product.stock ?? 10) <= 5 ? 'Only a few items left in stock!' : 'In Stock')
+              : 'Out of Stock'}
           </p>
 
           <div className={styles.description}>
