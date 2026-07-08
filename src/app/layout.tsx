@@ -43,7 +43,7 @@ export async function generateMetadata() {
       type: 'website',
     },
     other: {
-      'facebook-domain-verification': 'xt3j2x7y9n9nw5hcpfil20tjpxg27o',
+      'facebook-domain-verification': 'xt3j2x7y9n9nw5hcpfll20tjpxg27o',
     },
   };
 }
