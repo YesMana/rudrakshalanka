@@ -30,7 +30,7 @@ export async function generateMetadata() {
     openGraph: {
       title: settings.siteTitle,
       description: settings.siteDescription,
-      url: 'https://rudrakshalanka.com', // placeholder domain
+      url: 'https://rudrakshalanka.com',
       siteName: settings.siteTitle,
       images: [
         {
@@ -41,6 +41,9 @@ export async function generateMetadata() {
       ],
       locale: 'en_US',
       type: 'website',
+    },
+    other: {
+      'facebook-domain-verification': 'xt3j2x7y9n9nw5hcpfil20tjpxg27o',
     },
   };
 }
