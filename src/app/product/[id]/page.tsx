@@ -155,7 +155,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
           )}
 
           {product.requiresBirthDetails && (
-            <div style={{ marginTop: '1.5rem', marginBottom: '1.5rem', background: 'rgba(255,255,255,0.05)', padding: '1.5rem', borderRadius: '12px', borderLeft: '4px solid var(--color-gold)' }}>
+            <div className={styles.personalDetailsBox}>
               <h3 style={{ marginBottom: '1rem', color: 'var(--color-gold)' }}>Personal Details Required</h3>
               <p style={{ marginBottom: '1rem', fontSize: '0.9rem', color: '#ccc' }}>Please provide the following details for astrology/customization purposes.</p>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1rem' }}>
@@ -166,7 +166,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                     required 
                     value={birthDob}
                     onChange={(e) => setBirthDob(e.target.value)}
-                    style={{ width: '100%', padding: '0.8rem', borderRadius: '8px', border: '1px solid #444', background: '#222', color: '#fff', fontSize: '1rem' }} 
+                    className={styles.formInput}
                   />
                 </div>
                 <div>
@@ -177,7 +177,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                     placeholder="e.g. Leo / Singha"
                     value={birthZodiac}
                     onChange={(e) => setBirthZodiac(e.target.value)}
-                    style={{ width: '100%', padding: '0.8rem', borderRadius: '8px', border: '1px solid #444', background: '#222', color: '#fff', fontSize: '1rem' }} 
+                    className={styles.formInput}
                   />
                 </div>
               </div>

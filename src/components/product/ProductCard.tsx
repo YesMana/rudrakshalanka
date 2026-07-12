@@ -20,7 +20,7 @@ export default function ProductCard({ product }: { product: Product }) {
       <Link href={`/product/${product.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
         <div className={styles.imagePlaceholder} style={{ position: 'relative' }}>
           {displayImage && displayImage !== '' ? (
-            <img src={displayImage} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            <img src={displayImage} alt={product.name} className={styles.image} />
           ) : (
             <span>{product.name}</span>
           )}
@@ -29,12 +29,14 @@ export default function ProductCard({ product }: { product: Product }) {
             position: 'absolute',
             top: '10px',
             right: '10px',
-            background: inStock ? 'rgba(76, 175, 80, 0.9)' : 'rgba(244, 67, 54, 0.9)',
+            background: inStock ? 'rgba(76, 175, 80, 0.95)' : 'rgba(244, 67, 54, 0.95)',
             color: 'white',
-            padding: '4px 8px',
-            borderRadius: '4px',
-            fontSize: '0.8rem',
-            fontWeight: 'bold'
+            padding: '6px 12px',
+            borderRadius: '20px',
+            fontSize: '0.75rem',
+            fontWeight: 'bold',
+            boxShadow: '0 4px 10px rgba(0,0,0,0.3)',
+            backdropFilter: 'blur(4px)'
           }}>
             {inStock ? 'In Stock' : 'Out of Stock'}
           </div>
@@ -49,7 +51,7 @@ export default function ProductCard({ product }: { product: Product }) {
           </Link>
           {(product.hasVariations || product.requiresBirthDetails) ? (
             <button 
-              className={styles.button}
+              className={styles.buttonSecondary}
               onClick={() => router.push(`/product/${product.id}`)}
               style={{ flex: 1 }}
             >
@@ -57,14 +59,11 @@ export default function ProductCard({ product }: { product: Product }) {
             </button>
           ) : (
             <button 
-              className={styles.button}
+              className={styles.buttonSecondary}
               onClick={() => inStock && addToCart(product)} 
               disabled={!inStock}
               style={{ 
                 flex: 1, 
-                background: 'transparent', 
-                border: '1px solid var(--color-gold)', 
-                color: 'var(--color-gold)',
                 opacity: inStock ? 1 : 0.5,
                 cursor: inStock ? 'pointer' : 'not-allowed'
               }}

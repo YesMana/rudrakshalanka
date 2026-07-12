@@ -1,13 +1,13 @@
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 3rem 1rem;
+  padding: 5rem 1.5rem;
 }
 
 .productWrapper {
   display: flex;
   flex-direction: column;
-  gap: 3rem;
+  gap: 3.5rem;
 }
 
 @media (min-width: 768px) {
@@ -18,62 +18,87 @@
 }
 
 .imageSection {
-  flex: 1;
+  flex: 1.1;
 }
 
 .imagePlaceholder {
   width: 100%;
   aspect-ratio: 1;
-  background-color: var(--color-dark-charcoal);
-  border: 1px solid #333;
-  border-radius: 8px;
+  background-color: var(--color-surface);
+  backdrop-filter: var(--backdrop-blur);
+  border: var(--border-premium);
+  border-radius: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #666;
   font-size: 1.2rem;
+  overflow: hidden;
+  box-shadow: var(--shadow-premium);
+  transition: var(--transition-smooth);
+}
+
+.imagePlaceholder:hover {
+  border-color: rgba(245, 205, 121, 0.35);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.7), 0 0 20px rgba(245, 205, 121, 0.1);
 }
 
 .detailsSection {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1.75rem;
 }
 
 .title {
-  font-size: 2.5rem;
+  font-size: 2.75rem;
   color: var(--color-gold);
-  line-height: 1.2;
+  line-height: 1.15;
+  font-weight: 700;
+  text-shadow: 0 2px 10px rgba(245, 205, 121, 0.15);
 }
 
 .price {
-  font-size: 1.8rem;
+  font-size: 2.1rem;
   font-weight: bold;
   color: var(--color-off-white);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 1rem;
 }
 
 .description {
   font-size: 1.1rem;
-  color: #ccc;
+  color: #ddd;
   line-height: 1.8;
+  opacity: 0.95;
 }
 
 .benefits h3 {
   color: var(--color-gold);
   margin-bottom: 1rem;
-  font-size: 1.3rem;
+  font-size: 1.4rem;
+  font-weight: 600;
 }
 
 .benefits ul {
-  list-style-type: disc;
-  padding-left: 1.5rem;
+  list-style-type: none;
+  padding-left: 0;
   color: #ddd;
 }
 
 .benefits li {
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
   font-size: 1.1rem;
+  position: relative;
+  padding-left: 1.5rem;
+}
+
+.benefits li::before {
+  content: '✦';
+  position: absolute;
+  left: 0;
+  color: var(--color-gold);
+  font-weight: bold;
 }
 
 .actions {
@@ -91,18 +116,24 @@
 
 .buyNowBtn {
   flex: 1;
-  background-color: var(--color-maroon);
+  background: linear-gradient(135deg, #8b0000, #5c0000);
   color: var(--color-gold);
   text-align: center;
   padding: 1rem;
   border-radius: 8px;
   font-size: 1.2rem;
   font-weight: bold;
-  transition: opacity 0.2s;
+  transition: var(--transition-smooth);
+  border: 1px solid rgba(245, 205, 121, 0.25);
+  box-shadow: 0 4px 15px rgba(139, 0, 0, 0.3);
 }
 
 .buyNowBtn:hover {
-  opacity: 0.9;
+  background: var(--color-gold);
+  color: var(--color-maroon);
+  border-color: var(--color-gold);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(245, 205, 121, 0.4);
 }
 
 .whatsappBtn {
@@ -114,9 +145,47 @@
   border-radius: 8px;
   font-size: 1.2rem;
   font-weight: bold;
-  transition: opacity 0.2s;
+  transition: var(--transition-smooth);
+  border: none;
+  box-shadow: 0 4px 15px rgba(37, 211, 102, 0.2);
 }
 
 .whatsappBtn:hover {
-  opacity: 0.9;
+  background-color: #20ba5a;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
+}
+
+/* Glass inputs for product options form */
+.personalDetailsBox {
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+  background: rgba(30, 30, 30, 0.4);
+  backdrop-filter: var(--backdrop-blur);
+  padding: 1.5rem;
+  border-radius: 12px;
+  border-left: 4px solid var(--color-gold);
+  border-top: var(--border-premium);
+  border-right: var(--border-premium);
+  border-bottom: var(--border-premium);
+  box-shadow: var(--shadow-premium);
+}
+
+.formInput {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  border: var(--border-premium);
+  background: rgba(10, 10, 10, 0.6);
+  color: #fff;
+  font-size: 1rem;
+  font-family: inherit;
+  transition: var(--transition-smooth);
+}
+
+.formInput:focus {
+  outline: none;
+  border-color: var(--color-gold);
+  box-shadow: 0 0 12px var(--color-gold-glow);
+  background: rgba(10, 10, 10, 0.8);
 }
