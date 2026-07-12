@@ -45,7 +45,26 @@ export default function DashboardPage() {
         </button>
       </div>
       
-      <div className={styles.tabs}>
+      <div className={styles.overviewGrid}>
+        <div className={styles.statCard}>
+          <span className={styles.statLabel}>Total Sales</span>
+          <span className={styles.statValue}>Rs. 1.2M</span>
+        </div>
+        <div className={styles.statCard}>
+          <span className={styles.statLabel}>Pending Orders</span>
+          <span className={styles.statValue}>24</span>
+        </div>
+        <div className={styles.statCard}>
+          <span className={styles.statLabel}>Active Products</span>
+          <span className={styles.statValue}>18</span>
+        </div>
+        <div className={styles.statCard}>
+          <span className={styles.statLabel}>Total Visits</span>
+          <span className={styles.statValue}>5,420</span>
+        </div>
+      </div>
+
+      <div className={styles.tabsContainer}>
         <button 
           className={`${styles.tabBtn} ${activeTab === 'orders' ? styles.active : ''}`}
           onClick={() => setActiveTab('orders')}

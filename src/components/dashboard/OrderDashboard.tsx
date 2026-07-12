@@ -92,20 +92,20 @@ export default function OrderDashboard() {
       <div className={styles.header}>
         <h2>{t.dashboard.title || 'Recent Orders'}</h2>
         
-        <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-end', marginBottom: '1rem', flexWrap: 'wrap' }}>
-          <div>
-            <label style={{ display: 'block', fontSize: '0.9rem', color: 'var(--color-off-white)', marginBottom: '0.2rem' }}>Start Date</label>
-            <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} style={{ padding: '0.5rem', borderRadius: '4px', background: '#333', color: 'white', border: '1px solid #555' }} />
+        <div className={styles.actionBar}>
+          <div className={styles.inputGroup}>
+            <label>Start Date</label>
+            <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} className={styles.inputField} />
           </div>
-          <div>
-            <label style={{ display: 'block', fontSize: '0.9rem', color: 'var(--color-off-white)', marginBottom: '0.2rem' }}>End Date</label>
-            <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} style={{ padding: '0.5rem', borderRadius: '4px', background: '#333', color: 'white', border: '1px solid #555' }} />
+          <div className={styles.inputGroup}>
+            <label>End Date</label>
+            <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} className={styles.inputField} />
           </div>
-          <button onClick={downloadCSV} style={{ padding: '0.6rem 1rem', background: 'var(--color-gold)', color: 'black', fontWeight: 'bold', borderRadius: '4px', border: 'none', cursor: 'pointer' }}>
+          <button onClick={downloadCSV} className={styles.primaryBtn}>
             Export CSV
           </button>
-          <button className={styles.refreshBtn} onClick={fetchOrders} style={{ marginLeft: 'auto' }}>
-            Refresh
+          <button onClick={fetchOrders} className={styles.secondaryBtn}>
+            Refresh Data
           </button>
         </div>
       </div>

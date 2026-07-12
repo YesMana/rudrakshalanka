@@ -77,7 +77,7 @@ export default function AdminManagement() {
         <h2>Manage Admins</h2>
       </div>
       
-      <div style={{ background: '#1a1a1a', padding: '2rem', borderRadius: '8px', marginBottom: '2rem' }}>
+      <div className={styles.editorContainer} style={{ marginBottom: '2rem' }}>
         <h3 style={{ color: 'var(--color-gold)', marginBottom: '1rem' }}>Add New Admin</h3>
         
         <div style={{ marginBottom: '1.5rem', display: 'flex', gap: '1rem' }}>
@@ -145,7 +145,7 @@ export default function AdminManagement() {
         </form>
       </div>
 
-      <div style={{ background: '#1a1a1a', padding: '2rem', borderRadius: '8px' }}>
+      <div className={styles.editorContainer}>
         <h3 style={{ color: 'var(--color-gold)', marginBottom: '1rem' }}>Current Admins</h3>
         <p style={{ color: '#888', marginBottom: '1rem', fontSize: '0.9rem' }}>
           Note: The Master Admin (from environment variables) is not listed here but always has access.
@@ -156,7 +156,7 @@ export default function AdminManagement() {
         ) : (
           <table style={{ width: '100%', borderCollapse: 'collapse', color: '#fff' }}>
             <thead>
-              <tr style={{ borderBottom: '1px solid #333', textAlign: 'left' }}>
+              <tr style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.05)', textAlign: 'left', color: 'var(--color-gold)', textTransform: 'uppercase', fontSize: '0.9rem', letterSpacing: '0.5px' }}>
                 <th style={{ padding: '1rem 0' }}>Type</th>
                 <th style={{ padding: '1rem 0' }}>Details</th>
                 <th style={{ padding: '1rem 0', textAlign: 'right' }}>Actions</th>
@@ -164,7 +164,7 @@ export default function AdminManagement() {
             </thead>
             <tbody>
               {admins.map((admin) => (
-                <tr key={admin.id} style={{ borderBottom: '1px solid #333' }}>
+                <tr key={admin.id} style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.05)', transition: 'background 0.3s' }} onMouseOver={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.03)'} onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}>
                   <td style={{ padding: '1rem 0', textTransform: 'capitalize' }}>{admin.type}</td>
                   <td style={{ padding: '1rem 0' }}>
                     {admin.type === 'google' ? admin.email : `Username: ${admin.username}`}

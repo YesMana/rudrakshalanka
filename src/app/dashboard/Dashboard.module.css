@@ -1,37 +1,84 @@
-.tabs {
-  display: flex;
-  gap: 1rem;
+.overviewGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
   margin-bottom: 2rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  padding-bottom: 1rem;
+}
+
+.statCard {
+  background: var(--color-surface);
+  backdrop-filter: var(--backdrop-blur);
+  border: var(--border-premium);
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  transition: var(--transition-smooth);
+}
+
+.statCard:hover {
+  border: var(--border-premium-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px var(--color-gold-glow);
+}
+
+.statLabel {
+  font-size: 0.9rem;
+  color: #aaa;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.statValue {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-gold);
+}
+
+.tabsContainer {
+  background: rgba(10, 10, 10, 0.4);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 0.5rem;
+  margin-bottom: 2.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }
 
 .tabBtn {
+  flex: 1;
+  min-width: 150px;
   background: transparent;
-  color: var(--color-off-white);
-  padding: 0.75rem 1.5rem;
+  color: #888;
+  padding: 0.8rem 1.5rem;
   border-radius: 8px;
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 500;
-  transition: all 0.2s;
+  transition: var(--transition-smooth);
   border: 1px solid transparent;
+  text-align: center;
 }
 
 .tabBtn:hover {
-  background: rgba(245, 205, 121, 0.05);
+  color: var(--color-off-white);
+  background: rgba(255, 255, 255, 0.03);
 }
 
 .tabBtn.active {
-  background: rgba(245, 205, 121, 0.1);
+  background: var(--color-surface);
   color: var(--color-gold);
-  border: 1px solid rgba(245, 205, 121, 0.3);
+  border: var(--border-premium);
+  box-shadow: inset 0 0 10px rgba(245, 205, 121, 0.05);
 }
 
 .tabContent {
-  animation: fadeIn 0.3s ease;
+  animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
+  from { opacity: 0; transform: translateY(15px); }
   to { opacity: 1; transform: translateY(0); }
 }

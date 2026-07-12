@@ -435,7 +435,7 @@ export default function ProductManagement() {
                     <button 
                       onClick={() => handleEdit(product)}
                       className={styles.submitBtn}
-                      style={{ padding: '0.5rem', flex: 1, margin: 0, background: '#4CAF50' }}
+                      style={{ padding: '0.7rem', flex: 1, margin: 0, background: 'rgba(245, 205, 121, 0.1)', color: 'var(--color-gold)', border: '1px solid rgba(245, 205, 121, 0.3)', boxShadow: 'none' }}
                     >
                       Edit
                     </button>
